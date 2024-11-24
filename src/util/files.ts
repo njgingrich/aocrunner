@@ -15,7 +15,6 @@ export async function copyFiles(fromDir: string, toDir: string): Promise<void> {
   await ensureDir(`${Deno.cwd()}/${toDir}`);
 
   for await (const template of templates) {
-    console.log({ template });
     if (template.isDirectory) {
       console.log("Copying directory", template.name);
       await copyFiles(

@@ -12,11 +12,6 @@ export async function day(args: CliArgs): Promise<number> {
     return 1;
   }
 
-  // 1. look for existing dir with name dayXX
-  // 2. if it does not exist, create it with the template
-  // 3. fetch the input from the AoC website
-  // 4. run the module
-
   const dir = `day${day.toString().padStart(2, "0")}`;
   // TODO: do this the right way?
   if (!(await exists(join(dir, "main.ts")))) {
@@ -38,7 +33,7 @@ export async function day(args: CliArgs): Promise<number> {
       "--allow-write",
       join(dir, "main.ts"),
     ],
-    cwd: Deno.cwd(),
+    cwd: join(Deno.cwd(), dir),
   });
 
   const out = await process.output();
