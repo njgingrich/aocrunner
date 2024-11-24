@@ -3,9 +3,8 @@ import project from "../deno.json" with { type: "json" };
 
 const template = ({ year }: Config) =>
   `{
-  "name": "aoc${year}",
   "description": "Advent of Code solutions for ${year}",
-  "version": 1.0.0,
+  "version": "1.0.0",
   "tasks": {
     "day": "deno run aocrunner day"
   },

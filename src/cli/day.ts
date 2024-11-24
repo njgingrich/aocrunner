@@ -21,7 +21,7 @@ export async function day(args: CliArgs): Promise<number> {
   // TODO: do this the right way?
   if (!(await exists(join(dir, "main.ts")))) {
     console.log(`Initializing day ${day}`);
-    await copyFiles('template', dir);
+    await copyFiles("template", dir);
   }
 
   if (!(await exists(join(dir, "input.txt")))) {
@@ -40,6 +40,16 @@ export async function day(args: CliArgs): Promise<number> {
     ],
     cwd: Deno.cwd(),
   });
+
+  const out = await process.output();
+  const stdout = new TextDecoder().decode(out.stdout);
+  console.log(stdout);
+  const stderr = new TextDecoder().decode(out.stderr);
+  console.error(stderr);
+
+  if (!out.success) {
+    return 1;
+  }
 
   return 0;
 }

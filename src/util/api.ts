@@ -1,3 +1,3 @@
 export async function getInput() {
-    return 'test';
+  return "test";
 }
