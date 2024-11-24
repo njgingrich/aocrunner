@@ -2,21 +2,10 @@
 import prompts from "prompts";
 import { exists } from "@std/fs";
 
-import { copyFiles, copyTemplate } from "../util/files.ts";
 import { TEMPLATE_MAP } from "../../templates/index.ts";
 import { Config } from "../types.ts";
-
-function getYearOptions() {
-  const currentYear = new Date().getFullYear();
-  const firstYear = 2015;
-
-  const years = [];
-  for (let year = currentYear; year >= firstYear; year--) {
-    years.push({ title: `${year}`, value: `${year}` });
-  }
-
-  return years;
-}
+import { getYearOptions } from "../util/dates.ts";
+import { copyTemplate } from "../util/files.ts";
 
 function promptYear() {
   return {

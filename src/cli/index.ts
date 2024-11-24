@@ -36,8 +36,4 @@ async function main(): Promise<void> {
   Deno.exit(0);
 }
 
-if (import.meta.main) {
-  main();
-}
-
 export { main as cli };

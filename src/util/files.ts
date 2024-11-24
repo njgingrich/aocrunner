@@ -31,6 +31,14 @@ export async function copyFiles(fromDir: string, toDir: string): Promise<void> {
   }
 }
 
+/**
+ * Copy a template string or function to an output directory.
+ *
+ * @param text {string | Function} The text to copy, or a function that takes a config object and returns text.
+ * @param name {string} The name of the file to write. Can include path segments.
+ * @param directory {string} The directory to write the file to.
+ * @param config {Config} The configuration object to pass to the template function.
+ */
 export async function copyTemplate(
   text: string | Function,
   name: string,
