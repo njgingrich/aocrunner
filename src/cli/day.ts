@@ -31,7 +31,7 @@ export async function day(args: CliArgs): Promise<number> {
       "run",
       "--allow-read",
       "--allow-write",
-      join(dir, "main.ts"),
+      "main.ts",
     ],
     cwd: join(Deno.cwd(), dir),
   });
