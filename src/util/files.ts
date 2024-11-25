@@ -56,3 +56,22 @@ export async function copyTemplate(
   const textContent = typeof text === "function" ? text(config) : text;
   return Deno.writeTextFile(join(dir, name), textContent);
 }
+
+export function getDayDir(day: number): string {
+  return join(Deno.cwd(), `day${day.toString().padStart(2, "0")}`);
+}
+
+export function getDayPath(day: number, path?: string): string {
+  const dayDir = getDayDir(day);
+
+  if (!path) {
+    return dayDir;
+  } else {
+    return join(dayDir, path);
+  }
+}
+
+export function writeFileForDay(day: number, path: string, text: string): Promise<void> {
+  const dayDir = `day${day.toString().padStart(2, "0")}`;
+  return Deno.writeTextFile(join(Deno.cwd(), dayDir, path), text);
+}

@@ -3,7 +3,7 @@ import { join } from "@std/path";
 
 import type { CliArgs } from "./index.ts";
 import { getInput } from "../util/api.ts";
-import { copyFiles } from "../util/files.ts";
+import { copyFiles, getDayDir, getDayPath } from "../util/files.ts";
 
 export async function day(args: CliArgs): Promise<number> {
   const day = Number(args._[1]);
@@ -12,20 +12,23 @@ export async function day(args: CliArgs): Promise<number> {
     return 1;
   }
 
-  const dir = `day${day.toString().padStart(2, "0")}`;
+  const dayDir = getDayDir(day);
+  const entryPath = getDayPath(day, "main.ts");
+  const inputPath = getDayPath(day, "input.txt");
+
   // TODO: do this the right way?
-  if (!(await exists(join(dir, "main.ts")))) {
+  if (!(await exists(entryPath))) {
     console.log(`Initializing day ${day}`);
-    await copyFiles("template", dir);
+    await copyFiles("template", getDayDir(day));
   }
 
-  if (!(await exists(join(dir, "input.txt")))) {
+  if (!(await exists(inputPath))) {
     const input = await getInput();
-    await Deno.writeTextFile(join(dir, "input.txt"), input);
+    await Deno.writeTextFile(inputPath, input);
     console.log(`Fetched input for day ${day}`);
   }
 
-  console.log(`Running \`deno run ${join(dir, "main.ts")}\` in ${Deno.cwd()}`);
+  console.log(`Running Day ${day}`);
   const process = new Deno.Command(Deno.execPath(), {
     args: [
       "run",
@@ -33,7 +36,7 @@ export async function day(args: CliArgs): Promise<number> {
       "--allow-write",
       "main.ts",
     ],
-    cwd: join(Deno.cwd(), dir),
+    cwd: dayDir,
   });
 
   const out = await process.output();
