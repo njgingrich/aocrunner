@@ -11,8 +11,8 @@ import { Config } from "../types.ts";
 export async function copyFiles(fromDir: string, toDir: string): Promise<void> {
   const templates = Deno.readDir(fromDir);
 
-  console.log("Ensuring directory", `${Deno.cwd()}/${toDir}`);
-  await ensureDir(`${Deno.cwd()}/${toDir}`);
+  console.log("Ensuring directory", toDir);
+  await ensureDir(toDir);
 
   for await (const template of templates) {
     if (template.isDirectory) {
