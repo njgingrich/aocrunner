@@ -5,6 +5,14 @@ function getRawInput(): Promise<string> {
   return Deno.readTextFile("input.txt");
 }
 
+function getDay(): Promise<number> {
+  const module = import.meta.url;
+  // TODO: use path.parse
+  const parts = module.split("/");
+  const dayString = parts.at(-1);
+  return Number(day.slice(-2));
+}
+
 function parseInput(rawInput: string): string {
   return rawInput;
 }
@@ -41,6 +49,7 @@ run({
     solve: false,
   },
   input: await getRawInput(),
+  day: await getDay(),
 });
 `;
 

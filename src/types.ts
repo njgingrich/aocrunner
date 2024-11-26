@@ -10,7 +10,7 @@ interface PartConfig {
   runtime?: number;
 }
 
-interface DayConfig {
+export interface DayConfig {
   part1: PartConfig;
   part2: PartConfig;
 }

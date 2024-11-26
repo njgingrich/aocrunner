@@ -20,6 +20,7 @@
     "@std/path": "jsr:@std/path@^1.0.8",
     "@std/testing": "jsr:@std/testing@^1.0.5",
     "@types/prompts": "npm:@types/prompts@^2.4.9",
+    "chokidar": "npm:chokidar@^4.0.1",
     "prompts": "npm:prompts@^2.4.2"
   },
   "fmt": {

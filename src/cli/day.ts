@@ -1,9 +1,9 @@
 import { exists } from "@std/fs";
-import { join } from "@std/path";
 
 import type { CliArgs } from "./index.ts";
 import { getInput } from "../util/api.ts";
 import { copyFiles, getDayDir, getDayPath } from "../util/files.ts";
+import { runDay } from "../run.ts";
 
 export async function day(args: CliArgs): Promise<number> {
   const day = Number(args._[1]);
@@ -12,7 +12,6 @@ export async function day(args: CliArgs): Promise<number> {
     return 1;
   }
 
-  const dayDir = getDayDir(day);
   const entryPath = getDayPath(day, "main.ts");
   const inputPath = getDayPath(day, "input.txt");
 
@@ -28,26 +27,5 @@ export async function day(args: CliArgs): Promise<number> {
     console.log(`Fetched input for day ${day}`);
   }
 
-  console.log(`Running Day ${day}`);
-  const process = new Deno.Command(Deno.execPath(), {
-    args: [
-      "run",
-      "--allow-read",
-      "--allow-write",
-      "main.ts",
-    ],
-    cwd: dayDir,
-  });
-
-  const out = await process.output();
-  const stdout = new TextDecoder().decode(out.stdout);
-  console.log(stdout);
-  const stderr = new TextDecoder().decode(out.stderr);
-  console.error(stderr);
-
-  if (!out.success) {
-    return 1;
-  }
-
-  return 0;
+  return runDay(day);
 }
