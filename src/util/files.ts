@@ -1,5 +1,5 @@
 import { ensureDir } from "@std/fs";
-import { join, parse, SEPARATOR } from "@std/path";
+import { dirname, join, parse, SEPARATOR } from "@std/path";
 import { Config } from "../types.ts";
 
 /**
@@ -74,4 +74,18 @@ export function getDayPath(day: number, path?: string): string {
 export function writeFileForDay(day: number, path: string, text: string): Promise<void> {
   const dayDir = `day${day.toString().padStart(2, "0")}`;
   return Deno.writeTextFile(join(Deno.cwd(), dayDir, path), text);
+}
+
+/**
+ * This is useful because if we run a module from a day directory we sometimes still
+ * want to get the root dir
+ */
+export function getProjectDir() {
+  const cwd = Deno.cwd();
+  if (parse(cwd).name.includes("day")) {
+    // return the parent directory
+    return dirname(cwd);
+  }
+
+  return cwd;
 }

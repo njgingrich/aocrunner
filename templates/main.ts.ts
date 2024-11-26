@@ -10,7 +10,7 @@ function getDay(): Promise<number> {
   // TODO: use path.parse
   const parts = module.split("/");
   const dayString = parts.at(-1);
-  return Number(day.slice(-2));
+  return Number(dayString.slice(-2));
 }
 
 function parseInput(rawInput: string): string {

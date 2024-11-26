@@ -6,6 +6,7 @@ const TEMPLATE_MAP = {
   "template/main.ts": dayTemplate,
   "deno.json": denoJsonTemplate,
   ".env": envTemplate,
+  ".aoc.json": "{}",
 };
 
 export { TEMPLATE_MAP };

@@ -1,9 +1,10 @@
 import { join } from "@std/path";
 import { deepMerge } from "@std/collections/deep-merge";
 import { AocConfig } from "./types.ts";
+import { getProjectDir } from "./util/files.ts";
 
 function configPath(): string {
-  return join(Deno.cwd(), ".aoc.json");
+  return join(getProjectDir(), ".aoc.json");
 }
 
 export async function createConfig(): Promise<void> {
@@ -16,7 +17,9 @@ export async function getConfig(): Promise<AocConfig> {
   return JSON.parse(config);
 }
 
-export async function writeConfig(config: NestedPartial<AocConfig>): Promise<void> {
+export async function writeConfig(
+  config: NestedPartial<AocConfig>,
+): Promise<void> {
   const existingConfig = await getConfig();
   // @ts-expect-error - idk why it's mad here
   const newConfig = deepMerge<AocConfig>(existingConfig, config);
