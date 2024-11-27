@@ -1,19 +1,20 @@
 import { assertEquals } from "@std/assert";
 import { assertSpyCall, resolvesNext, stub } from "@std/testing/mock";
-import { writeConfig, writeDayConfig } from "./config.ts";
+import { Config } from "./config.ts";
 import { AocConfig } from "./types.ts";
 
 Deno.test("Writing config", async () => {
   const baseConfig = {
     year: "2024",
-    days: [],
+    days: {},
   } satisfies AocConfig;
+  const config = new Config(baseConfig);
 
-  const readTextFileStub = stub(
-    Deno,
-    "readTextFile",
-    resolvesNext([JSON.stringify(baseConfig)]),
-  );
+  // const readTextFileStub = stub(
+  //   Deno,
+  //   "readTextFile",
+  //   resolvesNext([JSON.stringify(baseConfig)]),
+  // );
   const writeSpy = stub(Deno, "writeTextFile");
 
   const dayConfig = {
@@ -32,7 +33,7 @@ Deno.test("Writing config", async () => {
     },
   };
 
-  await writeConfig({ days: dayConfig });
+  await (config).write({ days: dayConfig });
   assertSpyCall(writeSpy, 0, {
     args: [
       `${Deno.cwd()}/.aoc.json`,
@@ -47,7 +48,7 @@ Deno.test("Writing config", async () => {
     ],
   });
 
-  readTextFileStub.restore();
+  // readTextFileStub.restore();
   writeSpy.restore();
 });
 
@@ -70,6 +71,7 @@ Deno.test("Writing new day config", async () => {
       },
     },
   } satisfies AocConfig;
+  const config = new Config(baseConfig);
 
   const readTextFileStub = stub(
     Deno,
@@ -91,7 +93,7 @@ Deno.test("Writing new day config", async () => {
     },
   };
 
-  await writeDayConfig(2, dayConfig);
+  await config.writeDay(2, dayConfig);
   assertEquals(JSON.parse(writeSpy.calls[0].args[1] as string), {
     year: "2024",
     days: {
@@ -133,6 +135,7 @@ Deno.test("Overwrites existing day", async () => {
       },
     },
   } satisfies AocConfig;
+  const config = new Config(baseConfig);
 
   const readTextFileStub = stub(
     Deno,
@@ -150,7 +153,7 @@ Deno.test("Overwrites existing day", async () => {
     },
   };
 
-  await writeDayConfig(1, newConfig);
+  await config.writeDay(1, newConfig);
   assertEquals(JSON.parse(writeSpy.calls[0].args[1] as string), {
     year: "2024",
     days: {

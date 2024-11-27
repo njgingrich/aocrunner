@@ -1,4 +1,4 @@
-import { writeDayConfig } from "./config.ts";
+import { getConfig } from "./config.ts";
 import { DayConfig } from "./types.ts";
 import { getDayDir } from "./util/files.ts";
 
@@ -66,8 +66,7 @@ export async function runDay(day: number) {
 }
 
 /** The function the run module imports and calls */
-export function run(solutions: RunParams): void {
-  console.log("url", import.meta.url);
+export async function run(solutions: RunParams): Promise<void> {
   // Default solve to be true unless passed as false
   solutions.part1.solve = solutions.part1.solve === false ? false : true;
   const output: DayConfig = {
@@ -100,5 +99,5 @@ export function run(solutions: RunParams): void {
   }
 
   console.log("output:", output);
-  writeDayConfig(solutions.day, output);
+  (await getConfig()).writeDay(solutions.day, output);
 }

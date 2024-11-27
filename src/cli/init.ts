@@ -3,7 +3,7 @@ import prompts from "prompts";
 import { exists } from "@std/fs";
 
 import { TEMPLATE_MAP } from "../../templates/index.ts";
-import { Config } from "../types.ts";
+import { InitConfig } from "../types.ts";
 import { getYearOptions } from "../util/dates.ts";
 import { copyTemplate } from "../util/files.ts";
 
@@ -42,7 +42,7 @@ async function createProjectDirectory(directory: string) {
   await Deno.mkdir(directory);
 }
 
-async function copyTemplates(directory: string, config: Config) {
+async function copyTemplates(directory: string, config: InitConfig) {
   for (let [name, template] of Object.entries(TEMPLATE_MAP)) {
     console.log(`Copying template ${name}`);
     await copyTemplate(template, name, directory, config);
@@ -69,7 +69,7 @@ async function installPackages(directory: string) {
 export async function init(): Promise<number> {
   console.log("Initializing new project...");
 
-  const config: Config = await prompts([promptYear(), promptDirectory()]);
+  const config: InitConfig = await prompts([promptYear(), promptDirectory()]);
 
   try {
     console.log(`Initializing project at ${Deno.cwd()}/${config.directory}`);

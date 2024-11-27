@@ -1,4 +1,4 @@
-export type Config = {
+export type InitConfig = {
   year: string;
   directory: string;
 };
@@ -15,7 +15,7 @@ export interface DayConfig {
   part2: PartConfig;
 }
 
-export interface AocConfig {
+export interface AocConfig extends Record<PropertyKey, unknown> {
   year: string;
-  days: Record<number, DayConfig>;
+  days: Record<string, DayConfig>;
 }

@@ -1,6 +1,6 @@
 import { ensureDir } from "@std/fs";
 import { dirname, join, parse, SEPARATOR } from "@std/path";
-import { Config } from "../types.ts";
+import { InitConfig } from "../types.ts";
 
 /**
  * Copy a directory and its contents to another directory.
@@ -42,7 +42,7 @@ export async function copyTemplate(
   text: string | Function,
   name: string,
   directory: string,
-  config: Config,
+  config: InitConfig
 ): Promise<void> {
   let dir = join(Deno.cwd(), directory);
   if (name.includes(SEPARATOR)) {

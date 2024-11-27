@@ -1,34 +1,73 @@
 import { join } from "@std/path";
 import { deepMerge } from "@std/collections/deep-merge";
-import { AocConfig } from "./types.ts";
+import type { AocConfig, DayConfig } from "./types.ts";
 import { getProjectDir } from "./util/files.ts";
 
-function configPath(): string {
-  return join(getProjectDir(), ".aoc.json");
+const EMPTY_CONFIG: AocConfig = {
+    year: "",
+    days: {},
 }
 
-export async function createConfig(): Promise<void> {
-  return Deno.writeTextFile(configPath(), "{}");
+export class Config {
+  #data: AocConfig;
+
+  constructor(data?: NestedPartial<AocConfig>) {
+    this.#data = Object.assign({}, EMPTY_CONFIG, data);
+  }
+
+  static async load(): Promise<Config> {
+    const config = await Deno.readTextFile(Config.configPath());
+    const data = JSON.parse(config);
+    return new Config(data);
+  }
+
+  static configPath() {
+    return join(getProjectDir(), ".aoc.json");
+  }
+
+  get(): AocConfig {
+    return this.#data;
+  }
+
+  getDay(day: number | string): DayConfig {
+    return this.#data.days[`${day}`] ?? {};
+  }
+
+  writeDay(day: number | string, dayConfig: Partial<DayConfig>) {
+    const existingDay = this.getDay(day);
+    const newDay = Object.assign({}, existingDay, dayConfig);
+    return this.write({ days: { [`${day}`]: newDay } });
+  }
+
+  async write(data: Partial<AocConfig>) {
+    this.#data = deepMerge<AocConfig>(this.#data, data);
+    return Deno.writeTextFile(
+      Config.configPath(),
+      JSON.stringify(this.#data, null, 2)
+    );
+  }
 }
 
-export async function getConfig(): Promise<AocConfig> {
-  const config = await Deno.readTextFile(configPath());
-  console.log(config);
-  return JSON.parse(config);
+let  _config: Config;
+
+export async function getConfig() {
+    if (_config) {
+        return _config;
+    }
+    _config = await Config.load();
+    return _config;
 }
 
-export async function writeConfig(
-  config: NestedPartial<AocConfig>,
-): Promise<void> {
-  const existingConfig = await getConfig();
-  // @ts-expect-error - idk why it's mad here
-  const newConfig = deepMerge<AocConfig>(existingConfig, config);
-  return Deno.writeTextFile(configPath(), JSON.stringify(newConfig, null, 2));
-}
+// export class MemoryConfig extends Config {
+//     constructor(data?: NestedPartial<AocConfig>) {
+//         super(data);
+//     }
+// }
 
-export async function writeDayConfig(
-  day: number,
-  dayConfig: Partial<AocConfig["days"][number]>,
-): Promise<void> {
-  return writeConfig({ days: { [day]: dayConfig } });
-}
+// export class FileConfig extends Config {
+//     constructor() {
+//         const config = Deno.readTextFileSync(Config.configPath());
+//         const data = JSON.parse(config);
+//         super(data);
+//     }
+// }

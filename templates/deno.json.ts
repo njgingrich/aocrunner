@@ -1,7 +1,7 @@
-import { Config } from "../src/types.ts";
+import { InitConfig } from "../src/types.ts";
 import project from "../deno.json" with { type: "json" };
 
-const template = ({ year }: Config) =>
+const template = ({ year }: InitConfig) =>
   `{
   "description": "Advent of Code solutions for ${year}",
   "version": "1.0.0",
