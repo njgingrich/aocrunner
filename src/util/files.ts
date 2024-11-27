@@ -42,7 +42,7 @@ export async function copyTemplate(
   text: string | Function,
   name: string,
   directory: string,
-  config: InitConfig
+  config: InitConfig,
 ): Promise<void> {
   let dir = join(Deno.cwd(), directory);
   if (name.includes(SEPARATOR)) {

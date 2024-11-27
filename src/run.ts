@@ -43,7 +43,7 @@ function runSolver(
 }
 
 /** Run the module for a day */
-export async function runDay(day: number) {
+export async function runDay(day: number): Promise<number> {
   const dayDir = getDayDir(day);
 
   console.log(`Running Day ${day}`);
@@ -64,6 +64,7 @@ export async function runDay(day: number) {
     return 0;
   }
 }
+export type RunDayFn = typeof runDay;
 
 /** The function the run module imports and calls */
 export async function run(solutions: RunParams): Promise<void> {

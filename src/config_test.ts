@@ -33,7 +33,7 @@ Deno.test("Writing config", async () => {
     },
   };
 
-  await (config).write({ days: dayConfig });
+  await config.write({ days: dayConfig });
   assertSpyCall(writeSpy, 0, {
     args: [
       `${Deno.cwd()}/.aoc.json`,

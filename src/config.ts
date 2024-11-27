@@ -4,9 +4,9 @@ import type { AocConfig, DayConfig } from "./types.ts";
 import { getProjectDir } from "./util/files.ts";
 
 const EMPTY_CONFIG: AocConfig = {
-    year: "",
-    days: {},
-}
+  year: "",
+  days: {},
+};
 
 export class Config {
   #data: AocConfig;
@@ -43,19 +43,19 @@ export class Config {
     this.#data = deepMerge<AocConfig>(this.#data, data);
     return Deno.writeTextFile(
       Config.configPath(),
-      JSON.stringify(this.#data, null, 2)
+      JSON.stringify(this.#data, null, 2),
     );
   }
 }
 
-let  _config: Config;
+let _config: Config;
 
 export async function getConfig() {
-    if (_config) {
-        return _config;
-    }
-    _config = await Config.load();
+  if (_config) {
     return _config;
+  }
+  _config = await Config.load();
+  return _config;
 }
 
 // export class MemoryConfig extends Config {

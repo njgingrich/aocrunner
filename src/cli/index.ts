@@ -5,6 +5,7 @@ import { help } from "./help.ts";
 import { init } from "./init.ts";
 import { submit } from "./submit.ts";
 import { getConfig } from "../config.ts";
+import { submitSolution } from "../util/api.ts";
 
 function getArgs(args: string[] = Deno.args) {
   return parseArgs(args, {
@@ -37,7 +38,7 @@ async function main(): Promise<void> {
   }
 
   if (command === "submit") {
-    Deno.exit(await submit(args, config));
+    Deno.exit(await submit(args));
   }
 
   Deno.exit(0);
