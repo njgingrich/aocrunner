@@ -1,5 +1,4 @@
 import { parseArgs } from "@std/cli";
-import "@std/dotenv/load";
 
 import { day } from "./day.ts";
 import { help } from "./help.ts";

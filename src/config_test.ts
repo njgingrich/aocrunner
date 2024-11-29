@@ -10,12 +10,7 @@ Deno.test("Writing config", async () => {
   } satisfies AocConfig;
   const config = new Config(baseConfig);
 
-  // const readTextFileStub = stub(
-  //   Deno,
-  //   "readTextFile",
-  //   resolvesNext([JSON.stringify(baseConfig)]),
-  // );
-  const writeSpy = stub(Deno, "writeTextFile");
+  using writeSpy = stub(Deno, "writeTextFile");
 
   const dayConfig = {
     1: {
@@ -47,9 +42,6 @@ Deno.test("Writing config", async () => {
       ),
     ],
   });
-
-  // readTextFileStub.restore();
-  writeSpy.restore();
 });
 
 Deno.test("Writing new day config", async () => {
@@ -73,12 +65,12 @@ Deno.test("Writing new day config", async () => {
   } satisfies AocConfig;
   const config = new Config(baseConfig);
 
-  const readTextFileStub = stub(
+  using readTextFileStub = stub(
     Deno,
     "readTextFile",
     resolvesNext([JSON.stringify(baseConfig)]),
   );
-  const writeSpy = stub(Deno, "writeTextFile");
+  using writeSpy = stub(Deno, "writeTextFile");
 
   const dayConfig = {
     part1: {
@@ -112,9 +104,6 @@ Deno.test("Writing new day config", async () => {
       2: dayConfig,
     },
   });
-
-  readTextFileStub.restore();
-  writeSpy.restore();
 });
 
 Deno.test("Overwrites existing day", async () => {
@@ -137,12 +126,12 @@ Deno.test("Overwrites existing day", async () => {
   } satisfies AocConfig;
   const config = new Config(baseConfig);
 
-  const readTextFileStub = stub(
+  using readTextFileStub = stub(
     Deno,
     "readTextFile",
     resolvesNext([JSON.stringify(baseConfig)]),
   );
-  const writeSpy = stub(Deno, "writeTextFile");
+  using writeSpy = stub(Deno, "writeTextFile");
 
   const newConfig = {
     part2: {
@@ -168,7 +157,4 @@ Deno.test("Overwrites existing day", async () => {
       },
     },
   });
-
-  readTextFileStub.restore();
-  writeSpy.restore();
 });

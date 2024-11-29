@@ -1,16 +1,8 @@
-import {
-  assertSpyCall,
-  assertSpyCallAsync,
-  assertSpyCalls,
-  returnsNext,
-  spy,
-  stub,
-} from "@std/testing/mock";
+import { assertSpyCall, assertSpyCallAsync, returnsNext, spy, stub } from "@std/testing/mock";
 import { Config } from "../config.ts";
 import { AocConfig } from "../types.ts";
 import { submitDay } from "./submit.ts";
 import { assertEquals } from "@std/assert/equals";
-import { SubmitResponse } from "../api/types.ts";
 import { ApiClient } from "../api/client.ts";
 
 Deno.test("It should say already solved if part 2 is solved", async () => {

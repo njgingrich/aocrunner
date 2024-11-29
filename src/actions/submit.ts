@@ -1,4 +1,4 @@
-import type { RunDayFn } from "../run.ts";
+import type { RunDayFn } from "./run.ts";
 import { Config } from "../config.ts";
 import { ApiClient } from "../api/client.ts";
 
