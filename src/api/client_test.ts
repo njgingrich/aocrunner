@@ -13,9 +13,8 @@ function getFixturesPath() {
 Deno.test("Can request input", () => {
   const client = new ApiClient({
     baseUrl: "https://www.example.com",
-    config: new Config(),
+    config: new Config({ year: "2024" }),
     sessionToken: "testtoken",
-    year: 2024,
   });
 
   const fetchSpy = globalThis.fetch = spy(() => Promise.resolve(new Response("test")));
@@ -39,9 +38,8 @@ Deno.test("Can request input", () => {
 Deno.test("Can submit solution", async () => {
   const client = new ApiClient({
     baseUrl: "https://www.example.com",
-    config: new Config(),
+    config: new Config({ year: "2024" }),
     sessionToken: "testtoken",
-    year: 2024,
   });
 
   const fetchSpy = (globalThis.fetch = spy(() => {
@@ -72,9 +70,8 @@ Deno.test("Can submit solution", async () => {
 Deno.test("Will return an error if session token is invalid", async () => {
   const client = new ApiClient({
     baseUrl: "https://www.example.com",
-    config: new Config(),
+    config: new Config({ year: "2024" }),
     sessionToken: "testtoken",
-    year: 2024,
   });
 
   const fetchSpy = (globalThis.fetch = spy(() => {
@@ -102,9 +99,8 @@ Deno.test("Will return an error if session token is invalid", async () => {
 Deno.test("Will return token error if session token is empty", async () => {
   const client = new ApiClient({
     baseUrl: "https://www.example.com",
-    config: new Config(),
+    config: new Config({ year: "2024" }),
     sessionToken: "",
-    year: 2024,
   });
 
   const fetchSpy = (globalThis.fetch = spy(() => Promise.resolve(new Response("test"))));
@@ -119,9 +115,8 @@ Deno.test("Will return token error if session token is empty", async () => {
 Deno.test("Will return ratelimit response if too many requests are made", async () => {
   const client = new ApiClient({
     baseUrl: "https://www.example.com",
-    config: new Config(),
+    config: new Config({ year: "2024" }),
     sessionToken: "testtoken",
-    year: 2024,
   });
 
   const fetchSpy = (globalThis.fetch = spy(() => {
@@ -142,7 +137,6 @@ Deno.test("Will return ratelimit response if delay is already set", async () => 
     baseUrl: "https://www.example.com",
     config: new Config({ submitDelayMs: 60_000, prevSubmitTimestamp: Date.now() - 5000 }),
     sessionToken: "testtoken",
-    year: 2024,
   });
 
   const fetchSpy = (globalThis.fetch = spy(() => {
@@ -157,12 +151,11 @@ Deno.test("Will return ratelimit response if delay is already set", async () => 
 Deno.test("It updates config when a submission is made", async () => {
   using time = new FakeTime();
 
-  const config = new Config();
+  const config = new Config({ year: "2024" });
   const client = new ApiClient({
     baseUrl: "https://www.example.com",
     config,
     sessionToken: "testtoken",
-    year: 2024,
   });
 
   const fetchSpy = (globalThis.fetch = spy(() => {
@@ -186,7 +179,6 @@ Deno.test("It updates existing delay when new submit attempt is made", async () 
     baseUrl: "https://www.example.com",
     config,
     sessionToken: "testtoken",
-    year: 2024,
   });
 
   time.tick(6000);

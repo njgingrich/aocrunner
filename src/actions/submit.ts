@@ -1,6 +1,6 @@
 import type { RunDayFn } from "../run.ts";
-import type { SubmitSolutionFn } from "../util/api.ts";
 import { Config } from "../config.ts";
+import { ApiClient } from "../api/client.ts";
 
 export async function submitDay({
   day,
@@ -10,9 +10,9 @@ export async function submitDay({
 }: {
   day: number;
   config: Config;
-  submitFn: SubmitSolutionFn;
+  submitFn: ApiClient["submit"];
   runFn: RunDayFn;
-}) {
+}): Promise<number> {
   let dayConfig = config.getDay(day);
 
   // We have to order the checks to submit things correctly.
@@ -60,7 +60,7 @@ export async function submitDay({
   // Otherwise back to submitting part 1
   console.log("Submitting part 1 solution.");
   // TODO: submit it
-  await submitFn(day, 1, dayConfig.part1.result);
+  const result = await submitFn(day, 1, dayConfig.part1.result);
 
   return 0;
 }

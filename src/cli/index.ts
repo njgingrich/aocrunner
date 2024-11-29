@@ -1,11 +1,11 @@
 import { parseArgs } from "@std/cli";
+import "@std/dotenv/load";
 
 import { day } from "./day.ts";
 import { help } from "./help.ts";
 import { init } from "./init.ts";
 import { submit } from "./submit.ts";
 import { getConfig } from "../config.ts";
-import { submitSolution } from "../util/api.ts";
 
 function getArgs(args: string[] = Deno.args) {
   return parseArgs(args, {

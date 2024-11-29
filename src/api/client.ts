@@ -7,7 +7,6 @@ interface ApiClientArgs {
   baseUrl?: string | URL;
   config: Config;
   sessionToken: string;
-  year: number;
 }
 
 const DEFAULT_DELAY_MS = 60_000;
@@ -23,11 +22,12 @@ export class ApiClient {
   /** The unix timestamp of the most recent submission */
   #prevSubmitTimestamp = 0;
 
-  constructor({ baseUrl, config, sessionToken, year }: ApiClientArgs) {
+  constructor({ baseUrl, config, sessionToken }: ApiClientArgs) {
     this.#baseUrl = baseUrl ?? "https://adventofcode.com";
     this.#config = config;
     this.#sessionToken = sessionToken;
-    this.#year = year;
+
+    this.#year = Number(config.get().year);
 
     const configSubmitDelay = config.get().submitDelayMs;
     if (configSubmitDelay !== undefined) {
@@ -174,4 +174,15 @@ export class ApiClient {
       return this.#handleErrors(err);
     }
   }
+}
+
+let _client: ApiClient;
+
+export function getClient(params: ApiClientArgs) {
+  if (_client) {
+    return _client;
+  }
+
+  _client = new ApiClient(params);
+  return _client;
 }

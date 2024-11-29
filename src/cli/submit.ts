@@ -1,8 +1,8 @@
 import { getConfig } from "../config.ts";
 import { CliArgs } from "./index.ts";
 import { runDay } from "../run.ts";
-import { submitSolution } from "../util/api.ts";
 import { submitDay } from "../actions/submit.ts";
+import { getClient } from "../api/client.ts";
 
 export async function submit(args: CliArgs): Promise<number> {
   const day = Number(args._[1]);
@@ -11,7 +11,12 @@ export async function submit(args: CliArgs): Promise<number> {
     return 1;
   }
 
+  const sessionToken = Deno.env.get("AOC_SESSION_TOKEN") ?? "";
   const config = await getConfig();
+  const client = getClient({
+    config,
+    sessionToken,
+  });
 
-  return submitDay({ day, config, submitFn: submitSolution, runFn: runDay });
+  return submitDay({ day, config, submitFn: client.submit, runFn: runDay });
 }
