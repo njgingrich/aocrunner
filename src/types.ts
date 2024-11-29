@@ -5,7 +5,7 @@ export type InitConfig = {
 
 interface PartConfig {
   solved: boolean;
-  result?: any;
+  result?: string | number | undefined;
   tries: number;
   runtime?: number;
 }

@@ -128,6 +128,8 @@ Deno.test("Will return ratelimit response if too many requests are made", async 
 
   const resp = await client.submit(1, 1, "result");
   assertEquals(resp, { type: SubmitResult.RATE_LIMIT, delayMs: 60_000 });
+
+  fetchSpy.restore();
 });
 
 Deno.test("Will return ratelimit response if delay is already set", async () => {
@@ -146,6 +148,9 @@ Deno.test("Will return ratelimit response if delay is already set", async () => 
   const resp = await client.submit(1, 1, "result");
   // existing remaining delay of 55s - prev submit was 5s ago, set it to 60s
   assertEquals(resp, { type: SubmitResult.RATE_LIMIT, delayMs: 55_000 });
+
+  time.restore();
+  fetchSpy.restore();
 });
 
 Deno.test("It updates config when a submission is made", async () => {
@@ -169,6 +174,9 @@ Deno.test("It updates config when a submission is made", async () => {
   const confData = config.get();
   assertEquals(confData.prevSubmitTimestamp, Date.now());
   assertEquals(confData.submitDelayMs, 60_000);
+
+  time.restore();
+  fetchSpy.restore();
 });
 
 Deno.test("It updates existing delay when new submit attempt is made", async () => {
@@ -193,4 +201,7 @@ Deno.test("It updates existing delay when new submit attempt is made", async () 
   assertEquals(resp, { type: SubmitResult.RATE_LIMIT, delayMs: 49_000 });
   assertEquals(confData.prevSubmitTimestamp, Date.now());
   assertEquals(confData.submitDelayMs, 49_000);
+
+  time.restore();
+  fetchSpy.restore();
 });

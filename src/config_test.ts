@@ -1,7 +1,7 @@
 import { assertEquals } from "@std/assert";
 import { assertSpyCall, resolvesNext, stub } from "@std/testing/mock";
 import { Config } from "./config.ts";
-import { AocConfig } from "./types.ts";
+import type { AocConfig } from "./types.ts";
 
 Deno.test("Writing config", async () => {
   const baseConfig = {
@@ -65,7 +65,7 @@ Deno.test("Writing new day config", async () => {
   } satisfies AocConfig;
   const config = new Config(baseConfig);
 
-  using readTextFileStub = stub(
+  const readTextFileStub = stub(
     Deno,
     "readTextFile",
     resolvesNext([JSON.stringify(baseConfig)]),
@@ -104,6 +104,8 @@ Deno.test("Writing new day config", async () => {
       2: dayConfig,
     },
   });
+
+  readTextFileStub.restore();
 });
 
 Deno.test("Overwrites existing day", async () => {
@@ -126,7 +128,7 @@ Deno.test("Overwrites existing day", async () => {
   } satisfies AocConfig;
   const config = new Config(baseConfig);
 
-  using readTextFileStub = stub(
+  const readTextFileStub = stub(
     Deno,
     "readTextFile",
     resolvesNext([JSON.stringify(baseConfig)]),
@@ -157,4 +159,6 @@ Deno.test("Overwrites existing day", async () => {
       },
     },
   });
+
+  readTextFileStub.restore();
 });

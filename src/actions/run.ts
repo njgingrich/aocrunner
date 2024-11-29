@@ -1,5 +1,5 @@
-import { Config, getConfig } from "../config.ts";
-import { DayConfig } from "../types.ts";
+import { type Config, getConfig } from "../config.ts";
+import type { DayConfig } from "../types.ts";
 import { getDayDir } from "../util/files.ts";
 
 interface PartTest {

@@ -1,6 +1,6 @@
 import { ensureDir } from "@std/fs";
 import { dirname, join, parse, SEPARATOR } from "@std/path";
-import { InitConfig } from "../types.ts";
+import type { InitConfig } from "../types.ts";
 
 /**
  * Copy a directory and its contents to another directory.
@@ -39,7 +39,7 @@ export async function copyFiles(fromDir: string, toDir: string): Promise<void> {
  * @param config {Config} The configuration object to pass to the template function.
  */
 export async function copyTemplate(
-  text: string | Function,
+  text: string | ((config: InitConfig) => string),
   name: string,
   directory: string,
   config: InitConfig,

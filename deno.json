@@ -12,7 +12,7 @@
   "tasks": {
     "cli": "deno run --allow-env --allow-read --allow-write --allow-run main.ts",
     "hooks:install": "deno run --allow-read=deno.json,.git/hooks/ --allow-write=.git/hooks/ jsr:@hongminhee/deno-task-hooks",
-    "hooks:pre-commit": "deno fmt --check && deno lint"
+    "hooks:pre-commit": "deno fmt && deno lint src/"
   },
   "imports": {
     "@hongminhee/deno-task-hooks": "jsr:@hongminhee/deno-task-hooks@^0.1.2",

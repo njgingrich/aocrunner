@@ -18,5 +18,11 @@ export function parseResponse(html: string): jsdom.JSDOM {
  * @returns The required delay in milliseconds. Defaults to 1 minute.
  */
 export function getDelayMs(dom: jsdom.JSDOM) {
+  const main = dom.window.document.querySelector("main");
+  if (!main) {
+    return 60_000;
+  }
+  // TODO: check this for real!
+
   return 60_000;
 }

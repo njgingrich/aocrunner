@@ -1,32 +1,21 @@
-import {
-  assertSpyCall,
-  assertSpyCallAsync,
-  assertSpyCalls,
-  returnsNext,
-  spy,
-  stub,
-} from "@std/testing/mock";
+import { assertSpyCall, assertSpyCalls, spy } from "@std/testing/mock";
 import { TestConfig } from "../config.ts";
-import { AocConfig } from "../types.ts";
-import { submitDay } from "./submit.ts";
 import { assertEquals } from "@std/assert/equals";
-import { SubmitResponse } from "../api/types.ts";
-import { ApiClient } from "../api/client.ts";
-import { run, RunParams } from "./run.ts";
+import { run, type RunParams } from "./run.ts";
 import { _ } from "./run.ts";
 
 Deno.test("It should run part 1 if solve is true", async () => {
   const params = {
     part1: {
       solve: true,
-      solver: (input: string) => `part1`,
+      solver: () => `part1`,
       tests: [
         { input: "input", expected: "part1" },
       ],
     },
     part2: {
       solve: false,
-      solver: (input: string) => `part2`,
+      solver: () => `part2`,
     },
     day: 1,
     input: "input",
@@ -50,14 +39,14 @@ Deno.test("It should run part 2 if solve is true", async () => {
   const params = {
     part1: {
       solve: true,
-      solver: (input: string) => `part1`,
+      solver: () => `part1`,
       tests: [
         { input: "input", expected: "part1" },
       ],
     },
     part2: {
       solve: true,
-      solver: (input: string) => `part2`,
+      solver: () => `part2`,
     },
     day: 1,
     input: "input",
@@ -82,14 +71,14 @@ Deno.test("It should update config for returning result", async () => {
   const params = {
     part1: {
       solve: true,
-      solver: (input: string) => `part1`,
+      solver: () => `part1`,
       tests: [
         { input: "input", expected: "part1" },
       ],
     },
     part2: {
       solve: false,
-      solver: (input: string) => undefined,
+      solver: () => undefined,
     },
     day: 1,
     input: "input",
@@ -132,14 +121,14 @@ Deno.test("It should update config (tries) if no result is returned from solver"
   const params = {
     part1: {
       solve: true,
-      solver: (input: string) => `part1`,
+      solver: () => `part1`,
       tests: [
         { input: "input", expected: "part1" },
       ],
     },
     part2: {
       solve: true,
-      solver: (input: string) => undefined,
+      solver: () => undefined,
     },
     day: 1,
     input: "input",

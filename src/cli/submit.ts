@@ -1,5 +1,5 @@
 import { getConfig } from "../config.ts";
-import { CliArgs } from "./index.ts";
+import type { CliArgs } from "./index.ts";
 import { runDay } from "../actions/run.ts";
 import { submitDay } from "../actions/submit.ts";
 import { getClient } from "../api/client.ts";

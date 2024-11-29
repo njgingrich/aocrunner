@@ -3,7 +3,7 @@ import prompts from "prompts";
 import { exists } from "@std/fs";
 
 import { TEMPLATE_MAP } from "../../templates/index.ts";
-import { InitConfig } from "../types.ts";
+import type { InitConfig } from "../types.ts";
 import { getYearOptions } from "../util/dates.ts";
 import { copyTemplate } from "../util/files.ts";
 
@@ -43,7 +43,7 @@ async function createProjectDirectory(directory: string) {
 }
 
 async function copyTemplates(directory: string, config: InitConfig) {
-  for (let [name, template] of Object.entries(TEMPLATE_MAP)) {
+  for (const [name, template] of Object.entries(TEMPLATE_MAP)) {
     console.log(`Copying template ${name}`);
     await copyTemplate(template, name, directory, config);
   }

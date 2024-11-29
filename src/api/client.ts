@@ -1,4 +1,4 @@
-import { Config } from "../config.ts";
+import type { Config } from "../config.ts";
 import { ApiError, ApiServerError, SessionTokenError } from "./errors.ts";
 import { getDelayMs, parseResponse } from "./parser.ts";
 import { type SubmitResponse, SubmitResult } from "./types.ts";
@@ -139,8 +139,12 @@ export class ApiClient {
     return response.text();
   }
 
-  async submit(day: number, part: 1 | 2, solution: any): Promise<SubmitResponse> {
-    const body = new URLSearchParams({ level: part.toString(), answer: solution }).toString();
+  async submit(
+    day: number,
+    part: 1 | 2,
+    solution: string | number | undefined,
+  ): Promise<SubmitResponse> {
+    const body = new URLSearchParams({ level: part.toString(), answer: `${solution}` }).toString();
 
     if (!this.#canSubmit()) {
       // We can't submit yet, let the user know

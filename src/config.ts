@@ -32,7 +32,7 @@ export class Config {
     return new Config(data);
   }
 
-  static configPath() {
+  static configPath(): string {
     return join(getProjectDir(), ".aoc.json");
   }
 
@@ -44,7 +44,7 @@ export class Config {
     return this.#data.days[`${day}`] ?? EMPTY_DAY;
   }
 
-  writeDay(day: number | string, dayConfig: Partial<DayConfig>) {
+  writeDay(day: number | string, dayConfig: Partial<DayConfig>): Promise<void> {
     const existingDay = this.getDay(day);
     const newDay = Object.assign({}, existingDay, dayConfig);
     return this.write({ days: { [`${day}`]: newDay } });
@@ -55,7 +55,7 @@ export class Config {
     this.#data = data;
   }
 
-  async write(data: Partial<AocConfig>) {
+  write(data: Partial<AocConfig>): Promise<void> {
     // @ts-expect-error - IDK why deepMerge hates me
     this.setData(deepMerge<AocConfig>(this.#data, data));
     return Deno.writeTextFile(
@@ -67,7 +67,7 @@ export class Config {
 
 let _config: Config;
 
-export async function getConfig() {
+export async function getConfig(): Promise<Config> {
   if (_config) {
     return _config;
   }
@@ -77,13 +77,14 @@ export async function getConfig() {
 
 /** A config class you can use for testing that stubs out the actual writes */
 export class TestConfig extends Config {
-  static override async load(testData?: AocConfig): Promise<Config> {
+  static override load(testData?: AocConfig): Promise<Config> {
     const config = testData ?? EMPTY_CONFIG;
-    return new TestConfig(config);
+    return Promise.resolve(new TestConfig(config));
   }
 
-  override async write(data: Partial<AocConfig>) {
+  override write(data: Partial<AocConfig>): Promise<void> {
     // @ts-expect-error - IDK why deepMerge hates me
     this.setData(deepMerge<AocConfig>(this.get(), data));
+    return Promise.resolve();
   }
 }
