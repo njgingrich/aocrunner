@@ -5,7 +5,6 @@ import { day } from "./day.ts";
 import { help } from "./help.ts";
 import { init } from "./init.ts";
 import { submit } from "./submit.ts";
-import { getConfig } from "../config.ts";
 
 function getArgs(args: string[] = Deno.args) {
   return parseArgs(args, {
@@ -22,7 +21,6 @@ export type CliArgs = ReturnType<typeof getArgs>;
 async function main(): Promise<void> {
   const args = getArgs();
   const command = args._[0];
-  const config = await getConfig();
 
   if (args.help) {
     help();
