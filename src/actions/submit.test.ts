@@ -1,5 +1,6 @@
+// deno-lint-ignore-file no-unused-vars
 import { assertSpyCall, assertSpyCallAsync, returnsNext, spy, stub } from "@std/testing/mock";
-import { Config } from "../config.ts";
+import { TestConfig } from "../config.ts";
 import type { AocConfig } from "../types.ts";
 import { submitDay } from "./submit.ts";
 import { assertEquals } from "@std/assert/equals";
@@ -26,7 +27,7 @@ Deno.test("It should say already solved if part 2 is solved", async () => {
     },
   } as const satisfies AocConfig;
 
-  const config = new Config(solvedConfig);
+  const config = new TestConfig(solvedConfig);
   using consoleSpy = spy(console, "log");
 
   const result = await submitDay({
@@ -60,7 +61,7 @@ Deno.test("It should submit part 2 if result but not solved", async () => {
     },
   } as const satisfies AocConfig;
 
-  const config = new Config(dayConfig);
+  const config = new TestConfig(dayConfig);
   // @ts-expect-error - we're returning a subtype of SubmitResponse
   const successSubmitFn: ApiClient["submit"] = () => Promise.resolve({ type: "success" });
   const submitSpy = spy(successSubmitFn);
@@ -96,7 +97,7 @@ Deno.test("It should submit part 1 if part 2 has no result and part 1 is unsolve
     },
   } as const satisfies AocConfig;
 
-  const config = new Config(dayConfig);
+  const config = new TestConfig(dayConfig);
   // @ts-expect-error - we're returning a subtype of SubmitResponse
   const successSubmitFn: ApiClient["submit"] = () => Promise.resolve({ type: "success" });
   const submitSpy = spy(successSubmitFn);
@@ -132,7 +133,7 @@ Deno.test("It should run the day and submit part 1 if no part 1 result", async (
     },
   } as const satisfies AocConfig;
 
-  const config = new Config(dayConfig);
+  const config = new TestConfig(dayConfig);
   using configStub = stub(
     config,
     "getDay",
@@ -168,8 +169,6 @@ Deno.test("It should run the day and submit part 1 if no part 1 result", async (
   assertEquals(result, 0);
   assertSpyCallAsync(runDaySpy, 0, { args: [1] });
   assertSpyCallAsync(submitSpy, 0, { args: [1, 1, "abc"] });
-
-  configStub.restore();
 });
 
 Deno.test("It should error if part 2 has no result and part 1 is solved", async () => {
@@ -193,7 +192,7 @@ Deno.test("It should error if part 2 has no result and part 1 is solved", async 
     },
   } as const satisfies AocConfig;
 
-  const config = new Config(dayConfig);
+  const config = new TestConfig(dayConfig);
   // @ts-expect-error - we're returning a subtype of SubmitResponse
   const successSubmitFn: ApiClient["submit"] = () => Promise.resolve({ type: "success" });
   const submitSpy = spy(successSubmitFn);
@@ -231,7 +230,7 @@ Deno.test("It should error if no results found even after running", async () => 
     },
   } as const satisfies AocConfig;
 
-  const config = new Config(dayConfig);
+  const config = new TestConfig(dayConfig);
   using configStub = stub(
     config,
     "getDay",
@@ -267,6 +266,4 @@ Deno.test("It should error if no results found even after running", async () => 
   });
   assertEquals(result, 1);
   assertSpyCall(consoleSpy, 0, { args: ["No results found for day 1."] });
-
-  configStub.restore();
 });

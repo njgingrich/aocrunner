@@ -1,4 +1,4 @@
-import { InitConfig } from "../src/types.ts";
+import type { InitConfig } from "../src/types.ts";
 import project from "../deno.json" with { type: "json" };
 
 const template = ({ year }: InitConfig) =>
