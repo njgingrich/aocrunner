@@ -1,5 +1,5 @@
 // @ts-types="npm:@types/jsdom@21.1.7"
-import jsdom from "npm:jsdom";
+import jsdom from "npm:jsdom@25.0.1";
 
 /**
  * Parse the HTML response from the server.
