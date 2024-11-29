@@ -40,6 +40,7 @@ export class Config {
   }
 
   async write(data: Partial<AocConfig>) {
+    // @ts-expect-error - IDK why deepMerge hates me
     this.#data = deepMerge<AocConfig>(this.#data, data);
     return Deno.writeTextFile(
       Config.configPath(),
@@ -57,17 +58,3 @@ export async function getConfig() {
   _config = await Config.load();
   return _config;
 }
-
-// export class MemoryConfig extends Config {
-//     constructor(data?: NestedPartial<AocConfig>) {
-//         super(data);
-//     }
-// }
-
-// export class FileConfig extends Config {
-//     constructor() {
-//         const config = Deno.readTextFileSync(Config.configPath());
-//         const data = JSON.parse(config);
-//         super(data);
-//     }
-// }

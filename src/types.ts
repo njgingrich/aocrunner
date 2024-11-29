@@ -15,7 +15,10 @@ export interface DayConfig {
   part2: PartConfig;
 }
 
-export interface AocConfig extends Record<PropertyKey, unknown> {
+export interface AocConfig {
   year: string;
   days: Record<string, DayConfig>;
+
+  prevSubmitTimestamp?: number;
+  submitDelayMs?: number;
 }

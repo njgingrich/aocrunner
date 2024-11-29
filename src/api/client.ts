@@ -1,22 +1,43 @@
+import { Config } from "../config.ts";
 import { ApiError, ApiServerError, SessionTokenError } from "./errors.ts";
 import { getDelayMs, parseResponse } from "./parser.ts";
 import { type SubmitResponse, SubmitResult } from "./types.ts";
 
 interface ApiClientArgs {
   baseUrl?: string | URL;
+  config: Config;
   sessionToken: string;
   year: number;
 }
 
+const DEFAULT_DELAY_MS = 60_000;
+
 export class ApiClient {
   #baseUrl: string | URL;
+  #config: Config;
   #sessionToken: string;
   #year: number;
 
-  constructor({ baseUrl, sessionToken, year }: ApiClientArgs) {
+  /** How long we have to wait before submitting */
+  #submitDelayMs = 0;
+  /** The unix timestamp of the most recent submission */
+  #prevSubmitTimestamp = 0;
+
+  constructor({ baseUrl, config, sessionToken, year }: ApiClientArgs) {
     this.#baseUrl = baseUrl ?? "https://adventofcode.com";
+    this.#config = config;
     this.#sessionToken = sessionToken;
     this.#year = year;
+
+    const configSubmitDelay = config.get().submitDelayMs;
+    if (configSubmitDelay !== undefined) {
+      this.#submitDelayMs = configSubmitDelay;
+    }
+
+    const configPrevSubmitTimestamp = config.get().prevSubmitTimestamp;
+    if (configPrevSubmitTimestamp !== undefined) {
+      this.#prevSubmitTimestamp = configPrevSubmitTimestamp;
+    }
   }
 
   #headers() {
@@ -75,6 +96,39 @@ export class ApiClient {
     return { type: SubmitResult.UNKNOWN };
   }
 
+  #canSubmit() {
+    if (this.#prevSubmitTimestamp <= 0) {
+      return true;
+    }
+
+    const newSubmitDelayMs = this.#checkDelay();
+    if (newSubmitDelayMs <= 0) {
+      return true;
+    }
+
+    return false;
+  }
+
+  #checkDelay() {
+    const now = Date.now();
+    const remainingDelayMs = this.#submitDelayMs - (now - this.#prevSubmitTimestamp);
+
+    if (remainingDelayMs > 0) {
+      this.#setDelay(remainingDelayMs);
+    }
+    return remainingDelayMs;
+  }
+
+  #setDelay(newDelayMs: number) {
+    this.#prevSubmitTimestamp = Date.now();
+    this.#submitDelayMs = newDelayMs;
+
+    this.#config.write({
+      prevSubmitTimestamp: this.#prevSubmitTimestamp,
+      submitDelayMs: this.#submitDelayMs,
+    });
+  }
+
   async getInput(day: number) {
     const response = await this.#request("GET", `/${this.#year}/day/${day}/input`);
 
@@ -87,6 +141,11 @@ export class ApiClient {
 
   async submit(day: number, part: 1 | 2, solution: any): Promise<SubmitResponse> {
     const body = new URLSearchParams({ level: part.toString(), answer: solution }).toString();
+
+    if (!this.#canSubmit()) {
+      // We can't submit yet, let the user know
+      return { type: SubmitResult.RATE_LIMIT, delayMs: this.#submitDelayMs };
+    }
 
     try {
       const response = await this.#request("POST", `/${this.#year}/day/${day}/answer`, { body });
@@ -103,7 +162,14 @@ export class ApiClient {
       }
 
       const text = await response.text();
-      return this.getResponse(text);
+      const submitResponse = this.getResponse(text);
+      if (submitResponse.type === SubmitResult.RATE_LIMIT) {
+        this.#setDelay(submitResponse.delayMs);
+      } else {
+        this.#setDelay(DEFAULT_DELAY_MS);
+      }
+
+      return submitResponse;
     } catch (err) {
       return this.#handleErrors(err);
     }
