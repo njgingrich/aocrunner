@@ -1,29 +1,48 @@
 {
   "version": "4",
   "specifiers": {
+    "jsr:@hongminhee/deno-task-hooks@~0.1.2": "0.1.2",
     "jsr:@std/assert@1": "1.0.8",
     "jsr:@std/assert@^1.0.8": "1.0.8",
+    "jsr:@std/assert@~0.222.1": "0.222.1",
     "jsr:@std/async@^1.0.8": "1.0.9",
     "jsr:@std/cli@^1.0.6": "1.0.6",
+    "jsr:@std/cli@~0.222.1": "0.222.1",
     "jsr:@std/collections@^1.0.9": "1.0.9",
     "jsr:@std/data-structures@^1.0.4": "1.0.4",
     "jsr:@std/dotenv@~0.225.2": "0.225.2",
+    "jsr:@std/fmt@~0.222.1": "0.222.1",
     "jsr:@std/fs@^1.0.5": "1.0.6",
     "jsr:@std/fs@^1.0.6": "1.0.6",
+    "jsr:@std/fs@~0.222.1": "0.222.1",
     "jsr:@std/internal@^1.0.5": "1.0.5",
+    "jsr:@std/jsonc@~0.222.1": "0.222.1",
     "jsr:@std/path@^1.0.8": "1.0.8",
+    "jsr:@std/path@~0.222.1": "0.222.1",
     "jsr:@std/testing@^1.0.5": "1.0.5",
     "npm:@types/jsdom@21.1.7": "21.1.7",
     "npm:@types/jsdom@^21.1.7": "21.1.7",
     "npm:@types/prompts@2.4.9": "2.4.9",
     "npm:@types/prompts@^2.4.9": "2.4.9",
-    "npm:chokidar@^4.0.1": "4.0.1",
     "npm:jsdom@*": "25.0.1",
     "npm:jsdom@25.0.1": "25.0.1",
     "npm:jsdom@^25.0.1": "25.0.1",
     "npm:prompts@^2.4.2": "2.4.2"
   },
   "jsr": {
+    "@hongminhee/deno-task-hooks@0.1.2": {
+      "integrity": "72e87e497264efc72ca045fcefd2cdf8b47241e5058d382de9080c2dbb805e65",
+      "dependencies": [
+        "jsr:@std/cli@~0.222.1",
+        "jsr:@std/fmt",
+        "jsr:@std/fs@~0.222.1",
+        "jsr:@std/jsonc",
+        "jsr:@std/path@~0.222.1"
+      ]
+    },
+    "@std/assert@0.222.1": {
+      "integrity": "691637161ee584a9919d1f9950ddd1272feb8e0a19e83aa5b7563cedaf73d74c"
+    },
     "@std/assert@1.0.8": {
       "integrity": "ebe0bd7eb488ee39686f77003992f389a06c3da1bbd8022184804852b2fa641b",
       "dependencies": [
@@ -32,6 +51,12 @@
     },
     "@std/async@1.0.9": {
       "integrity": "c6472fd0623b3f3daae023cdf7ca5535e1b721dfbf376562c0c12b3fb4867f91"
+    },
+    "@std/cli@0.222.1": {
+      "integrity": "18b3c15840d68dc588db53613e0e9b196e30e33ea2a2906624c991c008421ffa",
+      "dependencies": [
+        "jsr:@std/assert@~0.222.1"
+      ]
     },
     "@std/cli@1.0.6": {
       "integrity": "d22d8b38c66c666d7ad1f2a66c5b122da1704f985d3c47f01129f05abb6c5d3d"
@@ -45,14 +70,32 @@
     "@std/dotenv@0.225.2": {
       "integrity": "e2025dce4de6c7bca21dece8baddd4262b09d5187217e231b033e088e0c4dd23"
     },
+    "@std/fmt@0.222.1": {
+      "integrity": "ec3382f9b0261c1ab1a5c804aa355d816515fa984cdd827ed32edfb187c0a722"
+    },
+    "@std/fs@0.222.1": {
+      "integrity": "337613f33e6e5970dddb263c3a3e5b8e39c97810ad6fe326cb9f65146af2503b"
+    },
     "@std/fs@1.0.6": {
       "integrity": "42b56e1e41b75583a21d5a37f6a6a27de9f510bcd36c0c85791d685ca0b85fa2",
       "dependencies": [
-        "jsr:@std/path"
+        "jsr:@std/path@^1.0.8"
       ]
     },
     "@std/internal@1.0.5": {
       "integrity": "54a546004f769c1ac9e025abd15a76b6671ddc9687e2313b67376125650dc7ba"
+    },
+    "@std/jsonc@0.222.1": {
+      "integrity": "5d82d64eeb244e88fbb0927587dea7e1feccc6d5d9f49995b9ff5756d01be493",
+      "dependencies": [
+        "jsr:@std/assert@~0.222.1"
+      ]
+    },
+    "@std/path@0.222.1": {
+      "integrity": "aad3e9463ca53b0adb25b4d5beb330025674aaa3278da24c1c261d9289a9e48b",
+      "dependencies": [
+        "jsr:@std/assert@~0.222.1"
+      ]
     },
     "@std/path@1.0.8": {
       "integrity": "548fa456bb6a04d3c1a1e7477986b6cffbce95102d0bb447c67c4ee70e0364be"
@@ -65,7 +108,7 @@
         "jsr:@std/data-structures",
         "jsr:@std/fs@^1.0.5",
         "jsr:@std/internal",
-        "jsr:@std/path"
+        "jsr:@std/path@^1.0.8"
       ]
     }
   },
@@ -102,12 +145,6 @@
     },
     "asynckit@0.4.0": {
       "integrity": "sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q=="
-    },
-    "chokidar@4.0.1": {
-      "integrity": "sha512-n8enUVCED/KVRQlab1hr3MVpcVMvxtZjmEa956u+4YijlmQED223XMSYj2tLuKvr4jcCTzNNMpQDUer72MMmzA==",
-      "dependencies": [
-        "readdirp"
-      ]
     },
     "combined-stream@1.0.8": {
       "integrity": "sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==",
@@ -240,9 +277,6 @@
     "punycode@2.3.1": {
       "integrity": "sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg=="
     },
-    "readdirp@4.0.2": {
-      "integrity": "sha512-yDMz9g+VaZkqBYS/ozoBJwaBhTbZo3UNYQHNRw1D3UFQB8oHB4uS/tAODO+ZLjGWmUbKnIlOWO+aaIiAxrUWHA=="
-    },
     "rrweb-cssom@0.7.1": {
       "integrity": "sha512-TrEMa7JGdVm0UThDJSx7ddw5nVm3UJS9o9CCIZ72B1vSyEZoziDqBYP3XIoi/12lKrJR8rE3jeFHMok2F/Mnsg=="
     },
@@ -322,6 +356,7 @@
   },
   "workspace": {
     "dependencies": [
+      "jsr:@hongminhee/deno-task-hooks@~0.1.2",
       "jsr:@std/assert@^1.0.8",
       "jsr:@std/cli@^1.0.6",
       "jsr:@std/collections@^1.0.9",
@@ -331,7 +366,6 @@
       "jsr:@std/testing@^1.0.5",
       "npm:@types/jsdom@^21.1.7",
       "npm:@types/prompts@^2.4.9",
-      "npm:chokidar@^4.0.1",
       "npm:jsdom@^25.0.1",
       "npm:prompts@^2.4.2"
     ]
