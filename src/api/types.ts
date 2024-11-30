@@ -1,4 +1,6 @@
-export const enum SubmitResult {
+import type { ApiError, SessionTokenError } from "./errors.ts";
+
+export const enum ApiResult {
   /** Submission was correct */
   SUCCESS = "SUCCESS",
   /** Submission was incorrect */
@@ -14,29 +16,43 @@ export const enum SubmitResult {
 }
 
 type SuccessResponse = {
-  type: SubmitResult.SUCCESS;
+  type: ApiResult.SUCCESS;
 };
 type FailureResponse = {
-  type: SubmitResult.FAILURE;
+  type: ApiResult.FAILURE;
 };
 type RateLimitResponse = {
-  type: SubmitResult.RATE_LIMIT;
+  type: ApiResult.RATE_LIMIT;
   delayMs: number;
 };
 type SessionTokenErrorResponse = {
-  type: SubmitResult.TOKEN_ERROR;
+  type: ApiResult.TOKEN_ERROR;
+  error: SessionTokenError;
 };
 type ErrorResponse = {
-  type: SubmitResult.ERROR;
+  type: ApiResult.ERROR;
+  error: ApiError;
 };
 type UnknownResponse = {
-  type: SubmitResult.UNKNOWN;
+  type: ApiResult.UNKNOWN;
+  error?: Error;
 };
 
 export type SubmitResponse =
   | SuccessResponse
   | FailureResponse
   | RateLimitResponse
+  | SessionTokenErrorResponse
+  | ErrorResponse
+  | UnknownResponse;
+
+type InputSuccessResponse = {
+  type: ApiResult.SUCCESS;
+  input: string;
+};
+
+export type InputResponse =
+  | InputSuccessResponse
   | SessionTokenErrorResponse
   | ErrorResponse
   | UnknownResponse;

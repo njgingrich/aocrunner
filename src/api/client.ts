@@ -1,7 +1,7 @@
 import type { Config } from "../config.ts";
 import { ApiError, ApiServerError, SessionTokenError } from "./errors.ts";
 import { getDelayMs, parseResponse } from "./parser.ts";
-import { type SubmitResponse, SubmitResult } from "./types.ts";
+import { ApiResult, type InputResponse, type SubmitResponse } from "./types.ts";
 
 interface ApiClientArgs {
   baseUrl?: string | URL;
@@ -70,30 +70,48 @@ export class ApiClient {
     const el = content.window.document.querySelector("main")?.textContent ?? "";
 
     if (el.includes("That's the right answer")) {
-      return { type: SubmitResult.SUCCESS };
+      return { type: ApiResult.SUCCESS };
     }
 
     if (el.includes("That's not the right answer")) {
-      return { type: SubmitResult.FAILURE };
+      return { type: ApiResult.FAILURE };
     }
 
     if (el.includes("You gave an answer too recently")) {
-      return { type: SubmitResult.RATE_LIMIT, delayMs: getDelayMs(content) };
+      return { type: ApiResult.RATE_LIMIT, delayMs: getDelayMs(content) };
     }
 
-    return { type: SubmitResult.UNKNOWN };
+    return { type: ApiResult.UNKNOWN };
   }
 
-  #handleErrors(err: unknown): SubmitResponse {
-    if (err instanceof SessionTokenError) {
-      return { type: SubmitResult.TOKEN_ERROR };
+  #handleSubmitErrors(error: unknown): SubmitResponse {
+    if (error instanceof SessionTokenError) {
+      return { type: ApiResult.TOKEN_ERROR, error };
     }
 
-    if (err instanceof ApiError) {
-      return { type: SubmitResult.ERROR };
+    if (error instanceof ApiError) {
+      return { type: ApiResult.ERROR, error };
     }
 
-    return { type: SubmitResult.UNKNOWN };
+    if (error instanceof Error) {
+      return { type: ApiResult.UNKNOWN, error };
+    }
+    return { type: ApiResult.UNKNOWN };
+  }
+
+  #handleGetErrors(error: unknown): InputResponse {
+    if (error instanceof SessionTokenError) {
+      return { type: ApiResult.TOKEN_ERROR, error };
+    }
+
+    if (error instanceof ApiError) {
+      return { type: ApiResult.ERROR, error };
+    }
+
+    if (error instanceof Error) {
+      return { type: ApiResult.UNKNOWN, error };
+    }
+    return { type: ApiResult.UNKNOWN };
   }
 
   #canSubmit() {
@@ -129,14 +147,20 @@ export class ApiClient {
     });
   }
 
-  async getInput(day: number) {
-    const response = await this.#request("GET", `/${this.#year}/day/${day}/input`);
+  async getInput(day: number): Promise<InputResponse> {
+    try {
+      const response = await this.#request("GET", `/${this.#year}/day/${day}/input`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch ${response.url}: ${response.statusText}`);
+      }
 
-    if (!response.ok) {
-      throw new Error(`Failed to fetch ${response.url}: ${response.statusText}`);
+      return {
+        type: ApiResult.SUCCESS,
+        input: await response.text(),
+      };
+    } catch (err) {
+      return this.#handleGetErrors(err);
     }
-
-    return response.text();
   }
 
   async submit(
@@ -148,7 +172,7 @@ export class ApiClient {
 
     if (!this.#canSubmit()) {
       // We can't submit yet, let the user know
-      return { type: SubmitResult.RATE_LIMIT, delayMs: this.#submitDelayMs };
+      return { type: ApiResult.RATE_LIMIT, delayMs: this.#submitDelayMs };
     }
 
     try {
@@ -167,7 +191,7 @@ export class ApiClient {
 
       const text = await response.text();
       const submitResponse = this.getResponse(text);
-      if (submitResponse.type === SubmitResult.RATE_LIMIT) {
+      if (submitResponse.type === ApiResult.RATE_LIMIT) {
         this.#setDelay(submitResponse.delayMs);
       } else {
         this.#setDelay(DEFAULT_DELAY_MS);
@@ -175,7 +199,7 @@ export class ApiClient {
 
       return submitResponse;
     } catch (err) {
-      return this.#handleErrors(err);
+      return this.#handleSubmitErrors(err);
     }
   }
 }

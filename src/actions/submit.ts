@@ -1,6 +1,31 @@
 import type { RunDayFn } from "./run.ts";
 import type { Config } from "../config.ts";
 import type { ApiClient } from "../api/client.ts";
+import { ApiResult, type SubmitResponse } from "../api/types.ts";
+
+function handleSubmit(response: SubmitResponse): number {
+  if (response.type === ApiResult.SUCCESS) {
+    console.log("You got the right answer!");
+    return 0;
+  } else if (response.type === ApiResult.FAILURE) {
+    console.log("That's not the right answer.");
+    return 1;
+  } else if (response.type === ApiResult.RATE_LIMIT) {
+    console.log(
+      `You gave an answer too recently. Please wait ${response.delayMs}ms.`,
+    );
+    return 1;
+  } else if (response.type === ApiResult.TOKEN_ERROR) {
+    console.error("Invalid session token. Make sure you have it set in your .env file!");
+    return 1;
+  } else if (response.type === ApiResult.ERROR) {
+    console.error("An error occurred:", response.error);
+    return 1;
+  } else {
+    console.log("Unknown error:", response);
+    return 1;
+  }
+}
 
 export async function submitDay({
   day,
@@ -25,9 +50,8 @@ export async function submitDay({
   // If there is a part 2 result, submit part 2.
   if (dayConfig.part2.result) {
     console.log("Submitting part 2 solution.");
-    // TODO: submit it
-    await submitFn(day, 2, dayConfig.part2.result);
-    return 0;
+    const res = await submitFn(day, 2, dayConfig.part2.result);
+    return handleSubmit(res);
   }
 
   if (!dayConfig.part2.result && dayConfig.part1.solved) {
@@ -38,9 +62,8 @@ export async function submitDay({
   // If there is no part 2 result, submit part 1 if unsolved.
   if (!dayConfig.part1.solved && dayConfig.part1.result) {
     console.log("Submitting part 1 solution.");
-    // TODO: submit it
-    await submitFn(day, 1, dayConfig.part1.result);
-    return 0;
+    const res = await submitFn(day, 1, dayConfig.part1.result);
+    return handleSubmit(res);
   }
 
   // If there is no part 1 result, run the day.
@@ -59,8 +82,6 @@ export async function submitDay({
 
   // Otherwise back to submitting part 1
   console.log("Submitting part 1 solution.");
-  // TODO: submit it
-  await submitFn(day, 1, dayConfig.part1.result);
-
-  return 0;
+  const res = await submitFn(day, 1, dayConfig.part1.result);
+  return handleSubmit(res);
 }

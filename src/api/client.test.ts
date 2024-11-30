@@ -4,7 +4,7 @@ import { assertSpyCall, assertSpyCalls, spy } from "@std/testing/mock";
 import { FakeTime } from "@std/testing/time";
 
 import { ApiClient } from "./client.ts";
-import { SubmitResult } from "./types.ts";
+import { ApiResult } from "./types.ts";
 import { TestConfig } from "../config.ts";
 
 function getFixturesPath() {
@@ -51,7 +51,7 @@ Deno.test("Can submit solution", async () => {
   }));
 
   const resp = await client.submit(1, 1, "result");
-  assertEquals(resp, { type: SubmitResult.SUCCESS });
+  assertEquals(resp, { type: ApiResult.SUCCESS });
   assertSpyCall(fetchSpy, 0, {
     args: [
       new URL("https://www.example.com/2024/day/1/answer"),
@@ -80,7 +80,7 @@ Deno.test("Will return an error if session token is invalid", async () => {
   }));
 
   const resp = await client.submit(1, 1, "result");
-  assertEquals(resp, { type: SubmitResult.TOKEN_ERROR });
+  assertEquals(resp.type, ApiResult.TOKEN_ERROR);
   assertSpyCall(fetchSpy, 0, {
     args: [
       new URL("https://www.example.com/2024/day/1/answer"),
@@ -107,7 +107,7 @@ Deno.test("Will return token error if session token is empty", async () => {
   const fetchSpy = (globalThis.fetch = spy(() => Promise.resolve(new Response("test"))));
 
   const resp = await client.submit(1, 1, "result");
-  assertEquals(resp, { type: SubmitResult.TOKEN_ERROR });
+  assertEquals(resp.type, ApiResult.TOKEN_ERROR);
 
   // We should not request the server if there's no token
   assertSpyCalls(fetchSpy, 0);
@@ -128,7 +128,7 @@ Deno.test("Will return ratelimit response if too many requests are made", async 
   }));
 
   const resp = await client.submit(1, 1, "result");
-  assertEquals(resp, { type: SubmitResult.RATE_LIMIT, delayMs: 60_000 });
+  assertEquals(resp, { type: ApiResult.RATE_LIMIT, delayMs: 60_000 });
 });
 
 Deno.test("Will return ratelimit response if delay is already set", async () => {
@@ -146,7 +146,29 @@ Deno.test("Will return ratelimit response if delay is already set", async () => 
 
   const resp = await client.submit(1, 1, "result");
   // existing remaining delay of 55s - prev submit was 5s ago, set it to 60s
-  assertEquals(resp, { type: SubmitResult.RATE_LIMIT, delayMs: 55_000 });
+  assertEquals(resp, { type: ApiResult.RATE_LIMIT, delayMs: 55_000 });
+});
+
+Deno.test("It updates delay when a failure response is given", async () => {
+  using time = new FakeTime();
+
+  const config = new TestConfig({ year: "2024" });
+  const client = new ApiClient({
+    baseUrl: "https://www.example.com",
+    config,
+    sessionToken: "testtoken",
+  });
+
+  const fetchSpy = (globalThis.fetch = spy(() => {
+    const text = Deno.readTextFileSync(
+      `${getFixturesPath()}/incorrect_response.html`,
+    );
+    return Promise.resolve(new Response(text));
+  }));
+
+  const resp = await client.submit(1, 1, "result");
+  assertEquals(resp, { type: ApiResult.FAILURE });
+  assertEquals(config.get().submitDelayMs, 60_000);
 });
 
 Deno.test("It updates config when a submission is made", async () => {
@@ -191,7 +213,7 @@ Deno.test("It updates existing delay when new submit attempt is made", async () 
   const resp = await client.submit(1, 1, "result");
   const confData = config.get();
   // Sends new delay of 55s - 6s
-  assertEquals(resp, { type: SubmitResult.RATE_LIMIT, delayMs: 49_000 });
+  assertEquals(resp, { type: ApiResult.RATE_LIMIT, delayMs: 49_000 });
   assertEquals(confData.prevSubmitTimestamp, Date.now());
   assertEquals(confData.submitDelayMs, 49_000);
 });
