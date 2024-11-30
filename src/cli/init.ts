@@ -62,7 +62,7 @@ async function installPackages(init: InitConfig) {
   console.log(stdout);
   if (!out.success) {
     const stderr = new TextDecoder().decode(out.stderr);
-    console.log('Error:', stderr);
+    console.log("Error:", stderr);
     throw new Error(`Failed to install packages`);
   }
 }
@@ -71,7 +71,7 @@ async function initConfig(init: InitConfig) {
   console.log("Writing initial project config");
   const config = await getConfig();
 
-  config.write({year: init.year, days: {}})
+  config.write({ year: init.year, days: {} });
 }
 
 export async function init(): Promise<number> {
