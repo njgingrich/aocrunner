@@ -3,7 +3,7 @@ import type { Config } from "../config.ts";
 import type { ApiClient } from "../api/client.ts";
 import { ApiResult, type SubmitResponse } from "../api/types.ts";
 
-function handleSubmit(response: SubmitResponse): number {
+function handleResponse(response: SubmitResponse): number {
   if (response.type === ApiResult.SUCCESS) {
     console.log("You got the right answer!");
     return 0;
@@ -51,7 +51,7 @@ export async function submitDay({
   if (dayConfig.part2.result) {
     console.log("Submitting part 2 solution.");
     const res = await submitFn(day, 2, dayConfig.part2.result);
-    return handleSubmit(res);
+    return handleResponse(res);
   }
 
   if (!dayConfig.part2.result && dayConfig.part1.solved) {
@@ -63,7 +63,7 @@ export async function submitDay({
   if (!dayConfig.part1.solved && dayConfig.part1.result) {
     console.log("Submitting part 1 solution.");
     const res = await submitFn(day, 1, dayConfig.part1.result);
-    return handleSubmit(res);
+    return handleResponse(res);
   }
 
   // If there is no part 1 result, run the day.
@@ -83,5 +83,5 @@ export async function submitDay({
   // Otherwise back to submitting part 1
   console.log("Submitting part 1 solution.");
   const res = await submitFn(day, 1, dayConfig.part1.result);
-  return handleSubmit(res);
+  return handleResponse(res);
 }

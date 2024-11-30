@@ -6,7 +6,20 @@ import { runDay } from "../actions/run.ts";
 import { getConfig } from "../config.ts";
 import { getClient } from "../api/client.ts";
 import { getSessionToken } from "../util/session.ts";
-import { ApiResult } from "../api/types.ts";
+import { ApiResult, type InputResponse } from "../api/types.ts";
+
+function handleResponse(response: InputResponse): string | void {
+  if (response.type === ApiResult.SUCCESS) {
+    console.log("Fetched input successfully.");
+    return response.input;
+  } else if (response.type === ApiResult.ERROR) {
+    console.error("Failed to fetch input:", response.error);
+    return;
+  } else {
+    console.error("Unknown error:", response);
+    return;
+  }
+}
 
 export async function day(args: CliArgs): Promise<number> {
   const day = Number(args._[1]);
@@ -29,12 +42,12 @@ export async function day(args: CliArgs): Promise<number> {
 
   if (!(await exists(inputPath))) {
     const response = await client.getInput(day);
-    if (response.type !== ApiResult.SUCCESS) {
-      console.error("Failed to fetch input");
+    const input = handleResponse(response);
+    if (!input) {
       return 1;
     }
 
-    await Deno.writeTextFile(inputPath, response.input);
+    await Deno.writeTextFile(inputPath, input);
     console.log(`Fetched input for day ${day}`);
   }
 
