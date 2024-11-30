@@ -42,7 +42,7 @@ export async function copyTemplate(
   text: string | ((config: InitConfig) => string),
   name: string,
   directory: string,
-  config: InitConfig,
+  init: InitConfig,
 ): Promise<void> {
   let dir = join(Deno.cwd(), directory);
   if (name.includes(SEPARATOR)) {
@@ -53,7 +53,7 @@ export async function copyTemplate(
 
   await ensureDir(dir);
   console.log(`Writing template to ${dir}/${name}`);
-  const textContent = typeof text === "function" ? text(config) : text;
+  const textContent = typeof text === "function" ? text(init) : text;
   return Deno.writeTextFile(join(dir, name), textContent);
 }
 
