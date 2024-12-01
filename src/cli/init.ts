@@ -1,5 +1,4 @@
-// @ts-types="npm:@types/prompts@2.4.9"
-import prompts from "prompts";
+import { input, select } from "@inquirer/prompts";
 import { exists } from "@std/fs";
 
 import { TEMPLATE_MAP } from "../../templates/index.ts";
@@ -10,19 +9,14 @@ import { aocTitle } from "../util/ascii.ts";
 import { getConfig } from "../config.ts";
 
 function promptYear() {
-  return {
-    type: "select",
-    name: "year",
+  return select({
     message: "Choose year",
     choices: getYearOptions(),
-    initial: 0,
-  } as const;
+  });
 }
 
-function promptDirectory() {
-  return {
-    type: "text",
-    name: "directory",
+function promptDirectory(year: string) {
+  return input({
     message: "Enter directory name",
     validate: (value: string) => {
       if (!value) {
@@ -31,8 +25,8 @@ function promptDirectory() {
 
       return true;
     },
-    initial: (prev: string) => prev,
-  } as const;
+    default: year,
+  });
 }
 
 function initMessage() {
@@ -83,7 +77,10 @@ async function initConfig(init: InitConfig) {
 
 export async function init(): Promise<number> {
   initMessage();
-  const init: InitConfig = await prompts([promptYear(), promptDirectory()]);
+
+  const year = await promptYear();
+  const directory = await promptDirectory(year);
+  const init: InitConfig = { year, directory };
 
   try {
     console.log(`Initializing project at ${Deno.cwd()}/${init.directory}`);
