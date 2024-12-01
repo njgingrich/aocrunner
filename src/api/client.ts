@@ -1,5 +1,5 @@
 import type { Config } from "../config.ts";
-import { ApiError, ApiServerError, SessionTokenError } from "./errors.ts";
+import { ApiError, ApiServerError, NotFoundError, SessionTokenError } from "./errors.ts";
 import { getDelayMs, parseResponse } from "./parser.ts";
 import { ApiResult, type InputResponse, type SubmitResponse } from "./types.ts";
 
@@ -96,12 +96,17 @@ export class ApiClient {
     if (error instanceof Error) {
       return { type: ApiResult.UNKNOWN, error };
     }
+
     return { type: ApiResult.UNKNOWN };
   }
 
   #handleGetErrors(error: unknown): InputResponse {
     if (error instanceof SessionTokenError) {
       return { type: ApiResult.TOKEN_ERROR, error };
+    }
+
+    if (error instanceof NotFoundError) {
+      return { type: ApiResult.NOT_FOUND, error };
     }
 
     if (error instanceof ApiError) {
@@ -111,6 +116,7 @@ export class ApiClient {
     if (error instanceof Error) {
       return { type: ApiResult.UNKNOWN, error };
     }
+
     return { type: ApiResult.UNKNOWN };
   }
 
@@ -180,6 +186,8 @@ export class ApiClient {
       if (response.status !== 200) {
         if (response.status === 400 || response.status === 500) {
           throw new SessionTokenError();
+        } else if (response.status === 404) {
+          throw new NotFoundError();
         } else if (response.status.toString().startsWith("5")) {
           throw new ApiServerError();
         }

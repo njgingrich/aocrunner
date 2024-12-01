@@ -10,6 +10,9 @@ function handleResponse(response: SubmitResponse): number {
   } else if (response.type === ApiResult.FAILURE) {
     console.log("That's not the right answer.");
     return 1;
+  } else if (response.type === ApiResult.NOT_FOUND) {
+    console.error("That day doesn't exist. (404 response)");
+    return 1;
   } else if (response.type === ApiResult.RATE_LIMIT) {
     console.log(
       `You gave an answer too recently. Please wait ${response.delayMs}ms.`,

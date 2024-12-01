@@ -12,6 +12,9 @@ function handleResponse(response: InputResponse): string | void {
   if (response.type === ApiResult.SUCCESS) {
     console.log("Fetched input successfully.");
     return response.input;
+  } else if (response.type === ApiResult.NOT_FOUND) {
+    console.error("Failed to fetch input - day not found.");
+    return;
   } else if (response.type === ApiResult.ERROR) {
     console.error("Failed to fetch input:", response.error);
     return;

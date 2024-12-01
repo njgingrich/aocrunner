@@ -5,6 +5,13 @@ export class ApiError extends Error {
   }
 }
 
+export class NotFoundError extends ApiError {
+  constructor(message?: string) {
+    super(message ?? "NotFoundError");
+    this.name = "NotFoundError";
+  }
+}
+
 export class ApiServerError extends ApiError {
   constructor(message?: string) {
     super(message ?? "ApiServerError");

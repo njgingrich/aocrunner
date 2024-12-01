@@ -5,6 +5,8 @@ export const enum ApiResult {
   SUCCESS = "SUCCESS",
   /** Submission was incorrect */
   FAILURE = "FAILURE",
+  /** Submission was not checked - could not find resource */
+  NOT_FOUND = "NOT_FOUND",
   /** Submission was not checked - rate limited */
   RATE_LIMIT = "RATE_LIMIT",
   /** Submission was not checked - invalid token */
@@ -29,6 +31,10 @@ type SessionTokenErrorResponse = {
   type: ApiResult.TOKEN_ERROR;
   error: SessionTokenError;
 };
+type NotFoundResponse = {
+  type: ApiResult.NOT_FOUND;
+  error: ApiError;
+}
 type ErrorResponse = {
   type: ApiResult.ERROR;
   error: ApiError;
@@ -43,6 +49,7 @@ export type SubmitResponse =
   | FailureResponse
   | RateLimitResponse
   | SessionTokenErrorResponse
+  | NotFoundResponse
   | ErrorResponse
   | UnknownResponse;
 
@@ -54,5 +61,6 @@ type InputSuccessResponse = {
 export type InputResponse =
   | InputSuccessResponse
   | SessionTokenErrorResponse
+  | NotFoundResponse
   | ErrorResponse
   | UnknownResponse;
