@@ -1,3 +1,4 @@
+import * as log from '@std/log';
 import { ensureDir } from "@std/fs";
 import { dirname, join, parse, SEPARATOR } from "@std/path";
 import type { InitConfig } from "../types.ts";
@@ -52,7 +53,7 @@ export async function copyTemplate(
   }
 
   await ensureDir(dir);
-  console.log(`Writing template to ${dir}/${name}`);
+  log.debug(`Writing template to ${dir}/${name}`);
   const textContent = typeof text === "function" ? text(init) : text;
   return Deno.writeTextFile(join(dir, name), textContent);
 }

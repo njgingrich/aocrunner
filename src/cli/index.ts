@@ -1,25 +1,18 @@
-import { parseArgs } from "@std/cli";
+import * as log from '@std/log';
 
+import { initLogger } from "../logger.ts";
+import { getArgs } from "../util/cli.ts";
 import { day } from "./day.ts";
 import { help } from "./help.ts";
 import { init } from "./init.ts";
 import { submit } from "./submit.ts";
 
-function getArgs(args: string[] = Deno.args) {
-  return parseArgs(args, {
-    boolean: ["help", "version"],
-    alias: {
-      help: ["h"],
-      version: ["v"],
-    },
-  });
-}
-
-export type CliArgs = ReturnType<typeof getArgs>;
+initLogger();
 
 async function main(): Promise<void> {
   const args = getArgs();
   const command = args._[0];
+  log.debug("Initialized with arguments", args);
 
   if (args.help) {
     help();

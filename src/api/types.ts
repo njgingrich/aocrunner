@@ -34,7 +34,7 @@ type SessionTokenErrorResponse = {
 type NotFoundResponse = {
   type: ApiResult.NOT_FOUND;
   error: ApiError;
-}
+};
 type ErrorResponse = {
   type: ApiResult.ERROR;
   error: ApiError;
