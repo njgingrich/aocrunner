@@ -1,8 +1,8 @@
 import { getConfig } from "../config.ts";
-import type { CliArgs } from "./index.ts";
 import { runDay } from "../actions/run.ts";
 import { submitDay } from "../actions/submit.ts";
 import { getClient } from "../api/client.ts";
+import type { CliArgs } from "../util/cli.ts";
 import { getSessionToken } from "../util/session.ts";
 
 export async function submit(args: CliArgs): Promise<number> {

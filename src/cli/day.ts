@@ -1,6 +1,6 @@
 import { exists } from "@std/fs";
 
-import type { CliArgs } from "./index.ts";
+import type { CliArgs } from "../util/cli.ts";
 import { copyFiles, getDayDir, getDayPath } from "../util/files.ts";
 import { runDay } from "../actions/run.ts";
 import { getConfig } from "../config.ts";
