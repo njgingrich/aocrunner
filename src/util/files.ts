@@ -1,4 +1,4 @@
-import * as log from '@std/log';
+import * as log from "@std/log";
 import { ensureDir } from "@std/fs";
 import { dirname, join, parse, SEPARATOR } from "@std/path";
 import type { InitConfig } from "../types.ts";

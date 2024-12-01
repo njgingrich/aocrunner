@@ -6,6 +6,7 @@ import { TEMPLATE_MAP } from "../../templates/index.ts";
 import type { InitConfig } from "../types.ts";
 import { getYearOptions } from "../util/dates.ts";
 import { copyTemplate } from "../util/files.ts";
+import { aocTitle } from "../util/ascii.ts";
 import { getConfig } from "../config.ts";
 
 function promptYear() {
@@ -32,6 +33,12 @@ function promptDirectory() {
     },
     initial: (prev: string) => prev,
   } as const;
+}
+
+function initMessage() {
+  aocTitle();
+  console.log("Initializing new project...");
+  console.log("");
 }
 
 async function createProjectDirectory(init: InitConfig) {
@@ -75,8 +82,7 @@ async function initConfig(init: InitConfig) {
 }
 
 export async function init(): Promise<number> {
-  console.log("Initializing new project...");
-
+  initMessage();
   const init: InitConfig = await prompts([promptYear(), promptDirectory()]);
 
   try {

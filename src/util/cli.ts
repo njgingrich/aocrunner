@@ -6,7 +6,7 @@ export function getArgs(args: string[] = Deno.args) {
     alias: {
       help: ["h"],
       version: ["v"],
-      debug: ["d"]
+      debug: ["d"],
     },
   });
 }

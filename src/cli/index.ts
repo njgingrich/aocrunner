@@ -1,4 +1,4 @@
-import * as log from '@std/log';
+import * as log from "@std/log";
 
 import { initLogger } from "../logger.ts";
 import { getArgs } from "../util/cli.ts";
