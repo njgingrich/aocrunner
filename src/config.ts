@@ -26,10 +26,12 @@ export class Config {
     this.#data = Object.assign({}, EMPTY_CONFIG, data);
   }
 
-  static async load(): Promise<Config> {
-    const config = await Deno.readTextFile(Config.configPath());
+  static async load(initialData?: AocConfig, path = Config.configPath()): Promise<Config> {
+    const config = await Deno.readTextFile(path);
     const data = JSON.parse(config);
-    return new Config(data);
+    // @ts-expect-error - IDK why deepMerge hates me
+    const mergedData = deepMerge<AocConfig>(data, initialData);
+    return new Config(mergedData);
   }
 
   static configPath(): string {
@@ -67,11 +69,18 @@ export class Config {
 
 let _config: Config;
 
-export async function getConfig(): Promise<Config> {
+/**
+ * Get the config for a project. If done outside of a specific project (like when
+ * initing a new project) you can pass in a path to the project root.
+ *
+ * @param overridePath An optional path (to the project root) for the config file
+ * @returns 
+ */
+export async function getConfig(overridePath?: string): Promise<Config> {
   if (_config) {
     return _config;
   }
-  _config = await Config.load();
+  _config = await Config.load(undefined, overridePath);
   return _config;
 }
 
