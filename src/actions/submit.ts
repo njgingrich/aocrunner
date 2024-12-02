@@ -4,29 +4,30 @@ import type { ApiClient } from "../api/client.ts";
 import { ApiResult, type SubmitResponse } from "../api/types.ts";
 
 function handleResponse(response: SubmitResponse): number {
-  if (response.type === ApiResult.SUCCESS) {
-    console.log("You got the right answer!");
-    return 0;
-  } else if (response.type === ApiResult.FAILURE) {
-    console.log("That's not the right answer.");
-    return 1;
-  } else if (response.type === ApiResult.NOT_FOUND) {
-    console.error("That day doesn't exist. (404 response)");
-    return 1;
-  } else if (response.type === ApiResult.RATE_LIMIT) {
-    console.log(
-      `You gave an answer too recently. Please wait ${response.delayMs}ms.`,
-    );
-    return 1;
-  } else if (response.type === ApiResult.TOKEN_ERROR) {
-    console.error("Invalid session token. Make sure you have it set in your .env file!");
-    return 1;
-  } else if (response.type === ApiResult.ERROR) {
-    console.error("An error occurred:", response.error);
-    return 1;
-  } else {
-    console.log("Unknown error:", response);
-    return 1;
+  switch (response.type) {
+    case ApiResult.SUCCESS:
+      console.log("You got the right answer!");
+      return 0;
+    case ApiResult.FAILURE:
+      console.log("That's not the right answer.");
+      return 1;
+    case ApiResult.NOT_FOUND:
+      console.error("That day doesn't exist. (404 response)");
+      return 1;
+    case ApiResult.RATE_LIMIT:
+      console.log(
+        `You gave an answer too recently. Please wait ${response.delayMs}ms.`,
+      );
+      return 1;
+    case ApiResult.TOKEN_ERROR:
+      console.error("Invalid session token. Make sure you have it set in your .env file!");
+      return 1;
+    case ApiResult.ERROR:
+      console.error("An error occurred:", response.error);
+      return 1;
+    case ApiResult.UNKNOWN:
+      console.log("Unknown error:", response);
+      return 1;
   }
 }
 
