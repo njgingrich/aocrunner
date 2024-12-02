@@ -1,5 +1,6 @@
 import { input, select } from "@inquirer/prompts";
 import { exists } from "@std/fs";
+import { join } from "@std/path";
 
 import { TEMPLATE_MAP } from "../../templates/index.ts";
 import type { InitConfig } from "../types.ts";
@@ -52,10 +53,11 @@ async function copyTemplates(init: InitConfig) {
 }
 
 async function installPackages(init: InitConfig) {
-  console.log(`Running \`deno install\` in ${Deno.cwd()}/${init.directory}`);
+  const projectDir = join(Deno.cwd(), init.directory);
+  console.log(`Running \`deno install\` in ${projectDir}`);
   const process = new Deno.Command(Deno.execPath(), {
     args: ["install"],
-    cwd: `${Deno.cwd()}/${init.directory}`,
+    cwd: projectDir,
   });
 
   const out = await process.output();
@@ -69,8 +71,9 @@ async function installPackages(init: InitConfig) {
 }
 
 async function initConfig(init: InitConfig) {
+  const projectDir = join(Deno.cwd(), init.directory);
   console.log("Writing initial project config");
-  const config = await getConfig();
+  const config = await getConfig(projectDir);
 
   config.write({ year: init.year, days: {} });
 }
@@ -83,7 +86,8 @@ export async function init(): Promise<number> {
   const init: InitConfig = { year, directory };
 
   try {
-    console.log(`Initializing project at ${Deno.cwd()}/${init.directory}`);
+    const projectDir = join(Deno.cwd(), init.directory);
+    console.log(`Initializing project at ${projectDir}`);
     await createProjectDirectory(init);
     await copyTemplates(init);
     await installPackages(init);
