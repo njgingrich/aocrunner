@@ -1,15 +1,16 @@
 const template = `
 import { run } from "aocrunner";
+import { parse, SEPARATOR } from "@std/path";
 
 function getRawInput(): Promise<string> {
   return Deno.readTextFile("input.txt");
 }
 
 function getDay(): number {
+  // TODO: extract to util function we import
   const module = import.meta.url;
-  // TODO: use path.parse
-  const parts = module.split("/");
-  const dayString = parts.at(-1) ?? "";
+  const parsed = parse(module);
+  const dayString = parsed.dir.split(SEPARATOR).pop();
   return Number(dayString.slice(-2));
 }
 

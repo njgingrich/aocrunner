@@ -26,7 +26,7 @@ export class Config {
     this.#data = Object.assign({}, EMPTY_CONFIG, data);
   }
 
-  static async load(initialData?: AocConfig, path = Config.configPath()): Promise<Config> {
+  static async load(initialData?: AocConfig, path: string = Config.configPath()): Promise<Config> {
     const config = await Deno.readTextFile(path);
     const data = JSON.parse(config);
     // @ts-expect-error - IDK why deepMerge hates me

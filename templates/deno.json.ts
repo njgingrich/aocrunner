@@ -9,6 +9,7 @@ const template = ({ year }: InitConfig) =>
     "day": "aocrunner day"
   },
   "imports": {
+    "@std/path": "jsr:@std/path@^1.0.8",
     "aocrunner": "jsr:@njgingrich/aocrunner@${project.version}"
   }
 }

@@ -1,3 +1,5 @@
+import * as log from "@std/log";
+
 import { type Config, getConfig } from "../config.ts";
 import type { DayConfig, Solution } from "../types.ts";
 import { getDayDir } from "../util/files.ts";
@@ -72,6 +74,7 @@ export type RunDayFn = typeof runDay;
 
 /** The function the run module imports and calls */
 export async function run(solutions: RunParams, config?: Config): Promise<void> {
+  log.debug("Running solution", solutions);
   if (!config) {
     config = await getConfig();
   }
@@ -81,11 +84,14 @@ export async function run(solutions: RunParams, config?: Config): Promise<void> 
   const output: DayConfig = config.getDay(solutions.day);
 
   if (solutions.part1.tests) {
+    log.debug("Running tests for part 1", solutions.part1.tests);
     _.runTests(solutions.part1);
   }
 
   if (solutions.part1.solve === true) {
+    log.debug("Running solution for part 1");
     const part1 = _.runSolver(solutions.part1, solutions.input);
+    log.debug("Found solution for part 1", { result: part1.result });
     console.log(`Solve part 1: ${part1.result}`);
 
     output.part1.result = part1.result;
