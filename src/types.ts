@@ -1,3 +1,5 @@
+export type Solution = string | number | undefined;
+
 export type InitConfig = {
   year: string;
   directory: string;
@@ -5,7 +7,7 @@ export type InitConfig = {
 
 interface PartConfig {
   solved: boolean;
-  result?: string | number | undefined;
+  result?: Solution;
   tries: number;
   runtime?: number;
 }

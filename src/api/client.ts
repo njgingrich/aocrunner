@@ -1,4 +1,5 @@
 import type { Config } from "../config.ts";
+import type { Solution } from "../types.ts";
 import { ApiError, ApiServerError, NotFoundError, SessionTokenError } from "./errors.ts";
 import { getDelayMs, parseResponse } from "./parser.ts";
 import { ApiResult, type InputResponse, type SubmitResponse } from "./types.ts";
@@ -172,7 +173,7 @@ export class ApiClient {
   async submit(
     day: number,
     part: 1 | 2,
-    solution: string | number | undefined,
+    solution: Solution,
   ): Promise<SubmitResponse> {
     const body = new URLSearchParams({ level: part.toString(), answer: `${solution}` }).toString();
 
