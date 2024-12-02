@@ -1,15 +1,15 @@
 import { type Config, getConfig } from "../config.ts";
-import type { DayConfig } from "../types.ts";
+import type { DayConfig, Solution } from "../types.ts";
 import { getDayDir } from "../util/files.ts";
 
 interface PartTest {
   input: string;
-  expected: string;
+  expected: Solution;
 }
 
 interface SolutionPart {
   tests?: PartTest[];
-  solver: (input: string) => string | number | undefined;
+  solver: (input: string) => Solution;
   solve?: boolean;
 }
 
@@ -20,7 +20,7 @@ export interface RunParams {
   day: number;
 }
 
-function runTests(part: SolutionPart): (string | number | undefined)[] {
+function runTests(part: SolutionPart): Solution[] {
   if (!part.tests) {
     throw new Error("Expected tests to be defined");
   }
@@ -38,7 +38,7 @@ function runTests(part: SolutionPart): (string | number | undefined)[] {
 function runSolver(
   part: SolutionPart,
   input: string,
-): { result: string | number | undefined; runtime: number } {
+): { result: Solution; runtime: number } {
   // TODO: actually do runtime
   const result = part.solver(input);
   return { result, runtime: 0 };
