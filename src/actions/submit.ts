@@ -26,7 +26,7 @@ function handleResponse(response: SubmitResponse): number {
       console.error("An error occurred:", response.error);
       return 1;
     case ApiResult.UNKNOWN:
-      console.log("Unknown error:", response);
+      console.log("Unknown result:", response);
       return 1;
   }
 }

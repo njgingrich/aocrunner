@@ -71,6 +71,7 @@ export class ApiClient {
   getResponse(html: string): SubmitResponse {
     const content = parseResponse(html);
     const el = content.window.document.querySelector("main")?.textContent ?? "";
+    log.debug("Parsed response", el);
 
     if (el.includes("That's the right answer")) {
       return { type: ApiResult.SUCCESS };
@@ -88,6 +89,7 @@ export class ApiClient {
   }
 
   #handleSubmitErrors(error: unknown): SubmitResponse {
+    log.debug("Submission request failed", { error });
     if (error instanceof SessionTokenError) {
       return { type: ApiResult.TOKEN_ERROR, error };
     }
@@ -100,10 +102,11 @@ export class ApiClient {
       return { type: ApiResult.UNKNOWN, error };
     }
 
-    return { type: ApiResult.UNKNOWN };
+    return { type: ApiResult.UNKNOWN, error: error as Error };
   }
 
   #handleGetErrors(error: unknown): InputResponse {
+    log.debug("Get request failed", { error });
     if (error instanceof SessionTokenError) {
       return { type: ApiResult.TOKEN_ERROR, error };
     }
@@ -120,7 +123,7 @@ export class ApiClient {
       return { type: ApiResult.UNKNOWN, error };
     }
 
-    return { type: ApiResult.UNKNOWN };
+    return { type: ApiResult.UNKNOWN, error: error as Error };
   }
 
   #canSubmit() {
@@ -187,6 +190,7 @@ export class ApiClient {
 
     try {
       const response = await this.#request("POST", `/${this.#year}/day/${day}/answer`, { body });
+      log.debug("Received response", { status: response.status, response });
       if (response.status !== 200) {
         if (response.status === 400 || response.status === 500) {
           throw new SessionTokenError();
