@@ -5,6 +5,7 @@ import type { AocConfig } from "../types.ts";
 import { submitDay } from "./submit.ts";
 import { assertEquals } from "@std/assert/equals";
 import type { ApiClient } from "../api/client.ts";
+import { ApiResult } from "../api/types.ts";
 
 Deno.test("It should say already solved if part 2 is solved", async () => {
   const solvedConfig = {
@@ -62,8 +63,7 @@ Deno.test("It should submit part 2 if result but not solved", async () => {
   } as const satisfies AocConfig;
 
   const config = new TestConfig(dayConfig);
-  // @ts-expect-error - we're returning a subtype of SubmitResponse
-  const successSubmitFn: ApiClient["submit"] = () => Promise.resolve({ type: "success" });
+  const successSubmitFn: ApiClient["submit"] = () => Promise.resolve({ type: ApiResult.SUCCESS });
   const submitSpy = spy(successSubmitFn);
 
   const result = await submitDay({
@@ -98,8 +98,7 @@ Deno.test("It should submit part 1 if part 2 has no result and part 1 is unsolve
   } as const satisfies AocConfig;
 
   const config = new TestConfig(dayConfig);
-  // @ts-expect-error - we're returning a subtype of SubmitResponse
-  const successSubmitFn: ApiClient["submit"] = () => Promise.resolve({ type: "success" });
+  const successSubmitFn: ApiClient["submit"] = () => Promise.resolve({ type: ApiResult.SUCCESS });
   const submitSpy = spy(successSubmitFn);
 
   const result = await submitDay({
@@ -155,8 +154,7 @@ Deno.test("It should run the day and submit part 1 if no part 1 result", async (
     ]),
   );
 
-  // @ts-expect-error - we're returning a subtype of SubmitResponse
-  const successSubmitFn: ApiClient["submit"] = () => Promise.resolve({ type: "success" });
+  const successSubmitFn: ApiClient["submit"] = () => Promise.resolve({ type: ApiResult.SUCCESS });
   const submitSpy = spy(successSubmitFn);
   const runDaySpy = spy(() => Promise.resolve(0));
 
@@ -193,8 +191,7 @@ Deno.test("It should error if part 2 has no result and part 1 is solved", async 
   } as const satisfies AocConfig;
 
   const config = new TestConfig(dayConfig);
-  // @ts-expect-error - we're returning a subtype of SubmitResponse
-  const successSubmitFn: ApiClient["submit"] = () => Promise.resolve({ type: "success" });
+  const successSubmitFn: ApiClient["submit"] = () => Promise.resolve({ type: ApiResult.SUCCESS });
   const submitSpy = spy(successSubmitFn);
   const runDaySpy = spy(() => Promise.resolve(0));
   using consoleSpy = spy(console, "log");

@@ -7,18 +7,20 @@ import jsdom from "npm:jsdom@25.0.1";
  * @param html The raw text response
  * @returns The parsed DOM
  */
-export function parseResponse(html: string): jsdom.JSDOM {
-  return new jsdom.JSDOM(html);
+export function parseResponse(html: string): string {
+  const content = new jsdom.JSDOM(html);
+  return content.window.document.querySelector("main")?.textContent ?? "";
 }
 
 /**
  * Get the time (in milliseconds) the page says we must wait before re-submitting the solution.
  *
- * @param dom The returned page DOM
+ * @param dom The raw text response
  * @returns The required delay in milliseconds. Defaults to 1 minute.
  */
-export function getDelayMs(dom: jsdom.JSDOM) {
-  const main = dom.window.document.querySelector("main");
+export function getDelayMs(html: string) {
+  const content = new jsdom.JSDOM(html);
+  const main = content.window.document.querySelector("main");
   if (!main) {
     return 60_000;
   }

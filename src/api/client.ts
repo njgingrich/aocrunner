@@ -69,8 +69,7 @@ export class ApiClient {
   }
 
   getResponse(html: string): SubmitResponse {
-    const content = parseResponse(html);
-    const el = content.window.document.querySelector("main")?.textContent ?? "";
+    const el = parseResponse(html);
     log.debug("Parsed response", el);
 
     if (el.includes("That's the right answer")) {
@@ -82,10 +81,14 @@ export class ApiClient {
     }
 
     if (el.includes("You gave an answer too recently")) {
-      return { type: ApiResult.RATE_LIMIT, delayMs: getDelayMs(content) };
+      return { type: ApiResult.RATE_LIMIT, delayMs: getDelayMs(html) };
     }
 
-    return { type: ApiResult.UNKNOWN };
+    if (el.includes("Did you already complete it")) {
+      return { type: ApiResult.ERROR, error: new ApiError("Already completed") };
+    }
+
+    return { type: ApiResult.UNKNOWN, error: new ApiError("Unable to parse server response") };
   }
 
   #handleSubmitErrors(error: unknown): SubmitResponse {

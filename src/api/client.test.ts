@@ -6,6 +6,7 @@ import { FakeTime } from "@std/testing/time";
 import { ApiClient } from "./client.ts";
 import { ApiResult } from "./types.ts";
 import { TestConfig } from "../config.ts";
+import { type ApiError } from "./errors.ts";
 
 function getFixturesPath() {
   return `${Deno.cwd()}/test/fixtures`;
@@ -111,6 +112,26 @@ Deno.test("Will return token error if session token is empty", async () => {
 
   // We should not request the server if there's no token
   assertSpyCalls(fetchSpy, 0);
+});
+
+Deno.test("Will return error response if submission is already solved", async () => {
+  const client = new ApiClient({
+    baseUrl: "https://www.example.com",
+    config: new TestConfig({ year: "2024" }),
+    sessionToken: "testtoken",
+  });
+
+  const fetchSpy = (globalThis.fetch = spy(() => {
+    const text = Deno.readTextFileSync(
+      `${getFixturesPath()}/already_solved_response.html`,
+    );
+    return Promise.resolve(new Response(text));
+  }));
+
+  const resp = await client.submit(1, 1, "result");
+  assertEquals(resp.type, ApiResult.ERROR);
+  // @ts-expect-error - doesn't always have error
+  assertEquals(resp?.error?.message, "Already completed");
 });
 
 Deno.test("Will return ratelimit response if too many requests are made", async () => {

@@ -20,12 +20,13 @@ function handleResponse(response: SubmitResponse): number {
       );
       return 1;
     case ApiResult.TOKEN_ERROR:
-      console.error("Invalid session token. Make sure you have it set in your .env file!");
+      console.log("Invalid session token. Make sure you have it set in your .env file!");
       return 1;
     case ApiResult.ERROR:
-      console.error("An error occurred:", response.error);
+      console.log("An error occurred:", response.error);
       return 1;
     case ApiResult.UNKNOWN:
+    default:
       console.log("Unknown result:", response);
       return 1;
   }
