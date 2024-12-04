@@ -6,7 +6,7 @@
   },
   "name": "@njgingrich/aocrunner",
   "description": "A CLI for running AOC solutions",
-  "version": "0.1.17",
+  "version": "0.1.18",
   "license": "MIT",
   "exports": "./main.ts",
   "tasks": {
