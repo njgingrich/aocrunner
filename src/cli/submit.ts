@@ -1,7 +1,7 @@
 import { getConfig } from "../config.ts";
 import { runDay } from "../actions/run.ts";
 import { submitDay } from "../actions/submit.ts";
-import { getClient } from "../api/client.ts";
+import { type ApiClient, getClient } from "../api/client.ts";
 import type { CliArgs } from "../util/cli.ts";
 import { getSessionToken } from "../util/session.ts";
 
@@ -18,5 +18,10 @@ export async function submit(args: CliArgs): Promise<number> {
     sessionToken: getSessionToken(),
   });
 
-  return submitDay({ day, config, submitFn: client.submit, runFn: runDay });
+  return submitDay({
+    day,
+    config,
+    submitFn: (...args: Parameters<ApiClient["submit"]>) => client.submit(...args),
+    runFn: runDay,
+  });
 }

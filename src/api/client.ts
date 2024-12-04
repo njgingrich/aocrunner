@@ -1,3 +1,5 @@
+import * as log from "@std/log";
+
 import type { Config } from "../config.ts";
 import type { Solution } from "../types.ts";
 import { ApiError, ApiServerError, NotFoundError, SessionTokenError } from "./errors.ts";
@@ -176,6 +178,7 @@ export class ApiClient {
     solution: Solution,
   ): Promise<SubmitResponse> {
     const body = new URLSearchParams({ level: part.toString(), answer: `${solution}` }).toString();
+    log.debug("Submitting solution", { day, part, solution, this: this });
 
     if (!this.#canSubmit()) {
       // We can't submit yet, let the user know
