@@ -55,7 +55,12 @@ Deno.test("It should run part 2 if solve is true", async () => {
   using runTestsSpy = spy(_, "runTests");
   using runSolverSpy = spy(_, "runSolver");
 
-  await run(params, new TestConfig());
+  const config = new TestConfig({
+    year: "2024",
+    days: { "1": { part1: { solved: true, result: "part1" }, part2: { solved: false } } },
+  });
+
+  await run(params, config);
   assertSpyCall(runTestsSpy, 0, {
     args: [params.part1],
     returned: ["part1"],
@@ -158,4 +163,86 @@ Deno.test("It should update config (tries) if no result is returned from solver"
   assertEquals(config.getDay(1).part1.result, "part1");
   assertEquals(config.getDay(1).part2.result, undefined);
   assertEquals(config.getDay(1).part2.tries, 1);
+});
+
+Deno.test("It should not run part 2 if part 1 is not solved", async () => {
+  const params = {
+    part1: {
+      solve: true,
+      solver: () => `part1`,
+      tests: [
+        { input: "input", expected: "part1" },
+      ],
+    },
+    part2: {
+      solve: false,
+      tests: [
+        { input: "input", expected: "part1" },
+      ],
+      solver: () => `part2`,
+    },
+    day: 1,
+    input: "input",
+  } satisfies RunParams;
+
+  using runTestsSpy = spy(_, "runTests");
+  using runSolverSpy = spy(_, "runSolver");
+
+  const config = new TestConfig({
+    year: "2024",
+    days: {
+      "1": {
+        part1: { solved: false, result: "test", tries: 1 },
+        part2: { solved: false, tries: 0 },
+      },
+    },
+  });
+  await run(params, config);
+  assertSpyCall(runTestsSpy, 0, {
+    args: [params.part1],
+    returned: ["part1"],
+  });
+  assertSpyCalls(runTestsSpy, 1); // part 2 was not run
+  assertSpyCalls(runSolverSpy, 1); // part 2 was not run
+});
+
+Deno.test("It should run part 2 if part 1 is not solved but part2.solve is true", async () => {
+  const params = {
+    part1: {
+      solve: true,
+      solver: () => `part1`,
+      tests: [
+        { input: "input", expected: "part1" },
+      ],
+    },
+    part2: {
+      solve: true,
+      tests: [
+        { input: "input", expected: "part1" },
+      ],
+      solver: () => `part2`,
+    },
+    day: 1,
+    input: "input",
+  } satisfies RunParams;
+
+  using runTestsSpy = spy(_, "runTests");
+  using runSolverSpy = spy(_, "runSolver");
+
+  const config = new TestConfig({
+    year: "2024",
+    days: {
+      "1": {
+        part1: { solved: false, result: "test", tries: 1 },
+        part2: { solved: false, tries: 0 },
+      },
+    },
+  });
+  await run(params, config);
+  assertSpyCall(runTestsSpy, 0, {
+    args: [params.part1],
+    returned: ["part1"],
+  });
+  assertSpyCalls(runTestsSpy, 2); // part 2 was run
+  assertSpyCalls(runSolverSpy, 2); // part 2 was run
 });

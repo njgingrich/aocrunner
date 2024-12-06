@@ -99,6 +99,11 @@ export async function run(solutions: RunParams, config?: Config): Promise<void> 
     output.part1.tries++;
   }
 
+  // Don't test/solve part 2 until part 1 is solved - unless overriden by part2.solve
+  if (!output.part1.solved && !solutions.part2.solve) {
+    return;
+  }
+
   if (solutions.part2.tests) {
     _.runTests(solutions.part2);
   }
