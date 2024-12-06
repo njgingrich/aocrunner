@@ -6,7 +6,6 @@ import { FakeTime } from "@std/testing/time";
 import { ApiClient } from "./client.ts";
 import { ApiResult } from "./types.ts";
 import { TestConfig } from "../config.ts";
-import type { ApiError } from "./errors.ts";
 
 function getFixturesPath() {
   return `${Deno.cwd()}/test/fixtures`;
