@@ -1,12 +1,16 @@
 # Runner
 
-Scripts to init and run AOC problems in Deno.
+CLI tool to fetch and run AOC problems in Deno.
+
+Warning! This is _absolutely_ not "ready for production". It has a lot of rough edges still. But if somebody does want to try it
+and give some feedback feel free to create an issue!
 
 ## Use
 
 - `aocrunner init`
 - `cd {directory}`
-- `deno task day 1`
+- `aocrunner day 1`
+- `aocrunner submit 1`
 
 ## Commands
 
@@ -26,3 +30,4 @@ Submit a solution for the given day.
 ## Future
 
 - Custom templates
+- Live functionality for `day` so tests can re-run, or solution can be submitted in an interactive TUI
